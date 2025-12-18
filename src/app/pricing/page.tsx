@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { Check, Crown, Sparkles, ArrowLeft, BookOpen } from 'lucide-react';
+import React, { useState } from 'react';
+import { Check, Crown, Sparkles, ArrowLeft, BookOpen, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
 const SUB_PLANS = [
@@ -96,6 +96,38 @@ const FAQS = [
 ];
 
 export default function PricingPage() {
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+
+  const handleCheckout = async (item: any) => {
+    setLoadingId(item.id);
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          planId: item.id,
+          price: item.price,
+          name: item.name,
+          interval: item.interval,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('エラーが発生しました: ' + (data.error || '不明なエラー'));
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('通信エラーが発生しました');
+    } finally {
+      setLoadingId(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -130,7 +162,7 @@ export default function PricingPage() {
             >
               {plan.popular && (
                 <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-primary text-white px-6 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg">
-                  <Crown size={18} /> 人気
+                  <span className="shrink-0"><Crown size={18} /></span> 人気
                 </div>
               )}
               
@@ -152,8 +184,18 @@ export default function PricingPage() {
                 ))}
               </ul>
 
-              <button className={`w-full py-4 rounded-2xl font-bold text-xl flex items-center justify-center gap-2 transition-all ${plan.popular ? 'gradient-primary text-white shadow-lg hover:shadow-xl' : 'bg-primary text-white hover:opacity-90'}`}>
-                {plan.popular && <Sparkles size={24} />} 今すぐ始める
+              <button 
+                onClick={() => handleCheckout(plan)}
+                disabled={loadingId !== null}
+                className={`w-full py-4 rounded-2xl font-bold text-xl flex items-center justify-center gap-2 transition-all ${plan.popular ? 'gradient-primary text-white shadow-lg hover:shadow-xl disabled:opacity-70' : 'bg-primary text-white hover:opacity-90 disabled:opacity-70'}`}
+              >
+                {loadingId === plan.id ? (
+                  <Loader2 className="animate-spin" size={24} />
+                ) : (
+                  <>
+                    {plan.popular && <Sparkles size={24} />} 今すぐ始める
+                  </>
+                )}
               </button>
             </div>
           ))}
@@ -186,8 +228,16 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <button className="w-full py-3 border-2 border-border rounded-xl font-bold text-lg hover:bg-muted/50 transition-all">
-                  購入する
+                <button 
+                  onClick={() => handleCheckout(pack)}
+                  disabled={loadingId !== null}
+                  className="w-full py-3 border-2 border-border rounded-xl font-bold text-lg hover:bg-muted/50 transition-all flex items-center justify-center disabled:opacity-70"
+                >
+                  {loadingId === pack.id ? (
+                    <Loader2 className="animate-spin" size={20} />
+                  ) : (
+                    '購入する'
+                  )}
                 </button>
               </div>
             ))}
@@ -212,4 +262,3 @@ export default function PricingPage() {
     </div>
   );
 }
-
