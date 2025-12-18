@@ -6,6 +6,7 @@ import { WordCard } from "@/components/WordCard";
 import { MultipleChoiceQuiz } from "@/components/MultipleChoiceQuiz";
 import { ListeningQuiz } from "@/components/ListeningQuiz";
 import { SpellingQuiz } from "@/components/SpellingQuiz";
+import { ImageChoiceQuiz } from "@/components/ImageChoiceQuiz";
 import {
   calculateNextReview,
   performanceToQuality,
@@ -108,6 +109,7 @@ export default function Home() {
     | "quiz-4-choice"
     | "quiz-listening"
     | "quiz-spelling"
+    | "quiz-image-choice"
   >("home");
   const [words, setWords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -178,6 +180,12 @@ export default function Home() {
     setCurrentIndex(0);
     setIsFinished(false);
     setView("quiz-spelling");
+  };
+
+  const startImageChoiceQuiz = () => {
+    setCurrentIndex(0);
+    setIsFinished(false);
+    setView("quiz-image-choice");
   };
 
   return (
@@ -257,6 +265,8 @@ export default function Home() {
                   <VolumeIcon className="h-8 w-8 text-orange-500" />
                 ) : view === "quiz-spelling" ? (
                   <Type className="h-8 w-8 text-blue-500" />
+                ) : view === "quiz-image-choice" ? (
+                  <ImageIcon className="h-8 w-8 text-purple-500" />
                 ) : (
                   <BookOpen className="h-8 w-8 text-primary" />
                 )}
@@ -269,6 +279,8 @@ export default function Home() {
                     ? "リスニング問題"
                     : view === "quiz-spelling"
                     ? "スペル入力"
+                    : view === "quiz-image-choice"
+                    ? "画像選択問題"
                     : "Imavo"}
                 </span>
               </div>
@@ -378,6 +390,8 @@ export default function Home() {
                       startListeningQuiz();
                     } else if (mode.id === "spelling") {
                       startSpellingQuiz();
+                    } else if (mode.id === "image-choice") {
+                      startImageChoiceQuiz();
                     } else {
                       startLearning();
                     }
@@ -541,6 +555,81 @@ export default function Home() {
                   ) : words.length > 0 ? (
                     <SpellingQuiz
                       currentWord={currentWord}
+                      onAnswer={handleAnswer}
+                    />
+                  ) : (
+                    <div className="py-20 text-center">
+                      <p className="text-gray-500 mb-4">データがありません。</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </main>
+        </div>
+      ) : view === "quiz-image-choice" ? (
+        /* Image Choice Quiz View */
+        <div className="animate-fade-in">
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            {isFinished ? (
+              <div className="max-w-2xl mx-auto animate-scale-in">
+                <div className="bg-white p-12 rounded-3xl shadow-2xl text-center border border-border/50">
+                  <h2 className="text-4xl font-bold text-gradient font-serif mb-6">
+                    🎉 画像クイズ完了！
+                  </h2>
+                  <p className="text-xl text-muted-foreground mb-10">
+                    視覚的な記憶力もバッチリですね！全問終了しました。
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    <button
+                      onClick={startImageChoiceQuiz}
+                      className="w-full py-5 bg-purple-500 text-white rounded-2xl font-bold text-xl shadow-lg hover:bg-purple-600 transition-all"
+                    >
+                      もう一度挑戦する
+                    </button>
+                    <button
+                      onClick={() => setView("home")}
+                      className="w-full py-5 bg-muted text-foreground rounded-2xl font-bold text-xl hover:bg-muted/80 transition-all"
+                    >
+                      ホームに戻る
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-12">
+                <header className="flex flex-col items-center gap-6">
+                  <div className="w-full max-w-2xl">
+                    <div className="flex justify-between items-end mb-3">
+                      <span className="text-sm font-bold text-purple-500 uppercase tracking-wider">
+                        進捗: {progressPercent}%
+                      </span>
+                      <span className="text-sm font-bold text-muted-foreground">
+                        {currentIndex + 1} / {words.length}
+                      </span>
+                    </div>
+                    <div className="w-full h-3 bg-muted rounded-full overflow-hidden shadow-inner">
+                      <div
+                        className="h-full bg-purple-500 transition-all duration-500 ease-out"
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                </header>
+
+                <div className="flex flex-col items-center">
+                  {loading ? (
+                    <div className="py-20 text-center">
+                      <Loader2
+                        className="animate-spin mx-auto text-purple-500 mb-4"
+                        size={48}
+                      />
+                      <p className="text-gray-500">画像を読み込み中...</p>
+                    </div>
+                  ) : words.length > 0 ? (
+                    <ImageChoiceQuiz
+                      currentWord={currentWord}
+                      allWords={words}
                       onAnswer={handleAnswer}
                     />
                   ) : (
