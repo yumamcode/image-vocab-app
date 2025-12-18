@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { WordCard } from "@/components/WordCard";
 import { MultipleChoiceQuiz } from "@/components/MultipleChoiceQuiz";
+import { ListeningQuiz } from "@/components/ListeningQuiz";
 import {
   calculateNextReview,
   performanceToQuality,
@@ -159,6 +160,12 @@ export default function Home() {
     setCurrentIndex(0);
     setIsFinished(false);
     setView("quiz-4-choice");
+  };
+
+  const startListeningQuiz = () => {
+    setCurrentIndex(0);
+    setIsFinished(false);
+    setView("quiz-listening");
   };
 
   return (
@@ -348,6 +355,8 @@ export default function Home() {
                   onClick={() => {
                     if (mode.id === "multiple-choice") {
                       start4ChoiceQuiz();
+                    } else if (mode.id === "listening") {
+                      startListeningQuiz();
                     } else {
                       startLearning();
                     }
@@ -372,6 +381,103 @@ export default function Home() {
                 </button>
               ))}
             </div>
+          </main>
+        </div>
+      ) : view === "quiz-listening" ? (
+        /* Listening Quiz View */
+        <div className="animate-fade-in">
+          <nav className="border-b border-border/40 backdrop-blur-md bg-background/80 sticky top-0 z-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center h-20">
+                <button
+                  onClick={() => setView("quiz-menu")}
+                  className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
+                >
+                  <span className="text-xl">←</span> クイズメニューへ
+                </button>
+                <div className="flex items-center space-x-3">
+                  <VolumeIcon className="h-8 w-8 text-orange-500" />
+                  <span className="text-2xl font-bold text-gradient font-serif">
+                    リスニング問題
+                  </span>
+                </div>
+                <div className="text-foreground font-bold text-lg">
+                  {currentIndex + 1} / {words.length}
+                </div>
+              </div>
+            </div>
+          </nav>
+
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            {isFinished ? (
+              <div className="max-w-2xl mx-auto animate-scale-in">
+                <div className="bg-white p-12 rounded-3xl shadow-2xl text-center border border-border/50">
+                  <h2 className="text-4xl font-bold text-gradient font-serif mb-6">
+                    🎉 リスニング完了！
+                  </h2>
+                  <p className="text-xl text-muted-foreground mb-10">
+                    素晴らしい耳をお持ちですね！全問終了しました。
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    <button
+                      onClick={startListeningQuiz}
+                      className="w-full py-5 bg-orange-500 text-white rounded-2xl font-bold text-xl shadow-lg hover:bg-orange-600 transition-all"
+                    >
+                      もう一度挑戦する
+                    </button>
+                    <button
+                      onClick={() => setView("home")}
+                      className="w-full py-5 bg-muted text-foreground rounded-2xl font-bold text-xl hover:bg-muted/80 transition-all"
+                    >
+                      ホームに戻る
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-12">
+                <header className="flex flex-col items-center gap-6">
+                  <div className="w-full max-w-2xl">
+                    <div className="flex justify-between items-end mb-3">
+                      <span className="text-sm font-bold text-orange-500 uppercase tracking-wider">
+                        進捗: {progressPercent}%
+                      </span>
+                      <span className="text-sm font-bold text-muted-foreground">
+                        {currentIndex + 1} / {words.length}
+                      </span>
+                    </div>
+                    <div className="w-full h-3 bg-muted rounded-full overflow-hidden shadow-inner">
+                      <div
+                        className="h-full bg-orange-500 transition-all duration-500 ease-out"
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                </header>
+
+                <div className="flex flex-col items-center">
+                  {loading ? (
+                    <div className="py-20 text-center">
+                      <Loader2
+                        className="animate-spin mx-auto text-orange-500 mb-4"
+                        size={48}
+                      />
+                      <p className="text-gray-500">音声データを準備中...</p>
+                    </div>
+                  ) : words.length > 0 ? (
+                    <ListeningQuiz
+                      currentWord={currentWord}
+                      allWords={words}
+                      onAnswer={handleAnswer}
+                    />
+                  ) : (
+                    <div className="py-20 text-center">
+                      <p className="text-gray-500 mb-4">データがありません。</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </main>
         </div>
       ) : view === "quiz-4-choice" ? (
