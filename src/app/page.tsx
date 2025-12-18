@@ -5,6 +5,7 @@ import Link from "next/link";
 import { WordCard } from "@/components/WordCard";
 import { MultipleChoiceQuiz } from "@/components/MultipleChoiceQuiz";
 import { ListeningQuiz } from "@/components/ListeningQuiz";
+import { SpellingQuiz } from "@/components/SpellingQuiz";
 import {
   calculateNextReview,
   performanceToQuality,
@@ -101,7 +102,12 @@ const FEATURES = [
 
 export default function Home() {
   const [view, setView] = useState<
-    "home" | "learn" | "quiz-menu" | "quiz-4-choice"
+    | "home"
+    | "learn"
+    | "quiz-menu"
+    | "quiz-4-choice"
+    | "quiz-listening"
+    | "quiz-spelling"
   >("home");
   const [words, setWords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -168,6 +174,12 @@ export default function Home() {
     setView("quiz-listening");
   };
 
+  const startSpellingQuiz = () => {
+    setCurrentIndex(0);
+    setIsFinished(false);
+    setView("quiz-spelling");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {view === "home" ? (
@@ -220,26 +232,53 @@ export default function Home() {
           </div>
         </nav>
       ) : (
-        /* Navigation for Learning */
+        /* Navigation for Learning & Quiz */
         <nav className="border-b border-border/40 backdrop-blur-md bg-background/80 sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
               <button
-                onClick={() => setView("home")}
+                onClick={() =>
+                  view === "learn" || view === "quiz-menu"
+                    ? setView("home")
+                    : setView("quiz-menu")
+                }
                 className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
               >
-                <span className="text-xl">←</span> ホームに戻る
+                <span className="text-xl">←</span>{" "}
+                {view === "learn" || view === "quiz-menu"
+                  ? "ホームに戻る"
+                  : "クイズメニューへ"}
               </button>
 
               <div className="flex items-center space-x-3">
-                <BookOpen className="h-8 w-8 text-primary" />
+                {view === "quiz-menu" || view === "quiz-4-choice" ? (
+                  <Trophy className="h-8 w-8 text-primary" />
+                ) : view === "quiz-listening" ? (
+                  <VolumeIcon className="h-8 w-8 text-orange-500" />
+                ) : view === "quiz-spelling" ? (
+                  <Type className="h-8 w-8 text-blue-500" />
+                ) : (
+                  <BookOpen className="h-8 w-8 text-primary" />
+                )}
                 <span className="text-2xl font-bold text-gradient font-serif">
-                  Imavo
+                  {view === "quiz-menu"
+                    ? "Quiz Modes"
+                    : view === "quiz-4-choice"
+                    ? "4択クイズ"
+                    : view === "quiz-listening"
+                    ? "リスニング問題"
+                    : view === "quiz-spelling"
+                    ? "スペル入力"
+                    : "Imavo"}
                 </span>
               </div>
 
               <div className="text-foreground font-bold text-lg">
-                {currentIndex + 1} / {words.length}
+                {view !== "quiz-menu" && (
+                  <>
+                    {currentIndex + 1} / {words.length}
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -318,26 +357,6 @@ export default function Home() {
       ) : view === "quiz-menu" ? (
         /* Quiz Menu View */
         <div className="animate-fade-in">
-          <nav className="border-b border-border/40 backdrop-blur-md bg-background/80 sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center h-20">
-                <button
-                  onClick={() => setView("home")}
-                  className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
-                >
-                  <span className="text-xl">←</span> ホームに戻る
-                </button>
-                <div className="flex items-center space-x-3">
-                  <Trophy className="h-8 w-8 text-primary" />
-                  <span className="text-2xl font-bold text-gradient font-serif">
-                    Quiz Modes
-                  </span>
-                </div>
-                <div className="w-24"></div> {/* Spacer */}
-              </div>
-            </div>
-          </nav>
-
           <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <div className="text-center mb-16 space-y-4">
               <h2 className="text-4xl md:text-5xl font-bold text-foreground font-serif">
@@ -357,6 +376,8 @@ export default function Home() {
                       start4ChoiceQuiz();
                     } else if (mode.id === "listening") {
                       startListeningQuiz();
+                    } else if (mode.id === "spelling") {
+                      startSpellingQuiz();
                     } else {
                       startLearning();
                     }
@@ -386,28 +407,6 @@ export default function Home() {
       ) : view === "quiz-listening" ? (
         /* Listening Quiz View */
         <div className="animate-fade-in">
-          <nav className="border-b border-border/40 backdrop-blur-md bg-background/80 sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center h-20">
-                <button
-                  onClick={() => setView("quiz-menu")}
-                  className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
-                >
-                  <span className="text-xl">←</span> クイズメニューへ
-                </button>
-                <div className="flex items-center space-x-3">
-                  <VolumeIcon className="h-8 w-8 text-orange-500" />
-                  <span className="text-2xl font-bold text-gradient font-serif">
-                    リスニング問題
-                  </span>
-                </div>
-                <div className="text-foreground font-bold text-lg">
-                  {currentIndex + 1} / {words.length}
-                </div>
-              </div>
-            </div>
-          </nav>
-
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             {isFinished ? (
               <div className="max-w-2xl mx-auto animate-scale-in">
@@ -480,31 +479,83 @@ export default function Home() {
             )}
           </main>
         </div>
+      ) : view === "quiz-spelling" ? (
+        /* Spelling Quiz View */
+        <div className="animate-fade-in">
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            {isFinished ? (
+              <div className="max-w-2xl mx-auto animate-scale-in">
+                <div className="bg-white p-12 rounded-3xl shadow-2xl text-center border border-border/50">
+                  <h2 className="text-4xl font-bold text-gradient font-serif mb-6">
+                    🎉 スペルクイズ完了！
+                  </h2>
+                  <p className="text-xl text-muted-foreground mb-10">
+                    完璧なスペリングです！全問終了しました。
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    <button
+                      onClick={startSpellingQuiz}
+                      className="w-full py-5 bg-blue-500 text-white rounded-2xl font-bold text-xl shadow-lg hover:bg-blue-600 transition-all"
+                    >
+                      もう一度挑戦する
+                    </button>
+                    <button
+                      onClick={() => setView("home")}
+                      className="w-full py-5 bg-muted text-foreground rounded-2xl font-bold text-xl hover:bg-muted/80 transition-all"
+                    >
+                      ホームに戻る
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-12">
+                <header className="flex flex-col items-center gap-6">
+                  <div className="w-full max-w-2xl">
+                    <div className="flex justify-between items-end mb-3">
+                      <span className="text-sm font-bold text-blue-500 uppercase tracking-wider">
+                        進捗: {progressPercent}%
+                      </span>
+                      <span className="text-sm font-bold text-muted-foreground">
+                        {currentIndex + 1} / {words.length}
+                      </span>
+                    </div>
+                    <div className="w-full h-3 bg-muted rounded-full overflow-hidden shadow-inner">
+                      <div
+                        className="h-full bg-blue-500 transition-all duration-500 ease-out"
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                </header>
+
+                <div className="flex flex-col items-center">
+                  {loading ? (
+                    <div className="py-20 text-center">
+                      <Loader2
+                        className="animate-spin mx-auto text-blue-500 mb-4"
+                        size={48}
+                      />
+                      <p className="text-gray-500">問題を準備中...</p>
+                    </div>
+                  ) : words.length > 0 ? (
+                    <SpellingQuiz
+                      currentWord={currentWord}
+                      onAnswer={handleAnswer}
+                    />
+                  ) : (
+                    <div className="py-20 text-center">
+                      <p className="text-gray-500 mb-4">データがありません。</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </main>
+        </div>
       ) : view === "quiz-4-choice" ? (
         /* 4-Choice Quiz View */
         <div className="animate-fade-in">
-          <nav className="border-b border-border/40 backdrop-blur-md bg-background/80 sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center h-20">
-                <button
-                  onClick={() => setView("quiz-menu")}
-                  className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
-                >
-                  <span className="text-xl">←</span> クイズメニューへ
-                </button>
-                <div className="flex items-center space-x-3">
-                  <Trophy className="h-8 w-8 text-primary" />
-                  <span className="text-2xl font-bold text-gradient font-serif">
-                    4択クイズ
-                  </span>
-                </div>
-                <div className="text-foreground font-bold text-lg">
-                  {currentIndex + 1} / {words.length}
-                </div>
-              </div>
-            </div>
-          </nav>
-
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             {isFinished ? (
               <div className="max-w-2xl mx-auto animate-scale-in">
