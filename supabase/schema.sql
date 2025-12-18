@@ -70,6 +70,30 @@ CREATE POLICY "Users can view their own progress" ON user_word_progress FOR SELE
 CREATE POLICY "Users can insert their own progress" ON user_word_progress FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Users can update their own progress" ON user_word_progress FOR UPDATE USING (auth.uid() = user_id);
 
--- 単語: 全員読み取り可能
+-- 単語: 全員読み取り・更新可能 (プロトタイプ用)
+DROP POLICY IF EXISTS "Words are viewable by everyone" ON words;
 CREATE POLICY "Words are viewable by everyone" ON words FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow All Updates on Words" ON words;
+CREATE POLICY "Allow All Updates on Words" ON words FOR UPDATE USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow All Inserts on Words" ON words;
+CREATE POLICY "Allow All Inserts on Words" ON words FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow All Deletes on Words" ON words;
+CREATE POLICY "Allow All Deletes on Words" ON words FOR DELETE USING (true);
+
+-- Storage bucket for word images
+INSERT INTO storage.buckets (id, name, public) VALUES ('word-images', 'word-images', true) ON CONFLICT DO NOTHING;
+
+-- Allow public read access to images
+DROP POLICY IF EXISTS "Public Access" ON storage.objects;
+CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = 'word-images');
+
+-- Allow anyone to upload/update images (プロトタイプ用)
+DROP POLICY IF EXISTS "Allow All Uploads" ON storage.objects;
+CREATE POLICY "Allow All Uploads" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'word-images');
+
+DROP POLICY IF EXISTS "Allow All Updates" ON storage.objects;
+CREATE POLICY "Allow All Updates" ON storage.objects FOR UPDATE USING (bucket_id = 'word-images');
 
