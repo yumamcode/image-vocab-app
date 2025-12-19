@@ -1,3 +1,4 @@
+// 画像の一括アップロードAPI
 import { NextResponse } from 'next/server';
 import { bulkUploadImages } from '@/lib/image-uploader';
 

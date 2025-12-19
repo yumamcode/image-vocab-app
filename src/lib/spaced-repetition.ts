@@ -1,4 +1,5 @@
 /**
+ * 間隔反復（SM-2アルゴリズム）の計算処理
  * Spaced Repetition Algorithm (SM-2)
  * 
  * This implementation is based on the SuperMemo SM-2 algorithm

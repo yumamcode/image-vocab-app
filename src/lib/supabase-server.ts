@@ -1,3 +1,4 @@
+// サーバーサイド用Supabaseクライアント
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 

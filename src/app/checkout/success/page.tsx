@@ -1,3 +1,4 @@
+// 支払い完了後のサンクスページ
 import React from 'react';
 import Link from 'next/link';
 import { CheckCircle2, Home, ArrowRight } from 'lucide-react';

@@ -1,3 +1,4 @@
+// 特権操作用Supabaseクライアント
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 export function createAdminClient() {

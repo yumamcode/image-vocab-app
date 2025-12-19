@@ -1,3 +1,4 @@
+// クライアントサイド用Supabaseクライアント
 import { createBrowserClient } from '@supabase/ssr'
 
 export function createClient() {

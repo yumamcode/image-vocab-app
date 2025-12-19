@@ -1,3 +1,4 @@
+// 初期単語データの定義と投入処理
 import { createAdminClient } from "@/lib/supabase-admin";
 
 const TOEIC_600_WORDS = [

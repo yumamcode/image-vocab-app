@@ -1,5 +1,5 @@
 'use client';
-
+// リスニング形式のクイズコンポーネント
 import React, { useState, useEffect, useMemo } from 'react';
 import { Check, X, Volume2, ArrowRight, Play } from 'lucide-react';
 

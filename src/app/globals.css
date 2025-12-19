@@ -1,3 +1,4 @@
+/* グローバルスタイルとTailwind CSSの設定 */
 @import "tailwindcss";
 
 @theme {

@@ -1,5 +1,5 @@
 'use client';
-
+// 4択形式のクイズコンポーネント
 import React, { useState, useEffect, useMemo } from 'react';
 import { Check, X, Volume2, ArrowRight } from 'lucide-react';
 

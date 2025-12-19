@@ -1,3 +1,4 @@
+// Stripe Checkoutセッション作成API
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 

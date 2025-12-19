@@ -1,3 +1,4 @@
+# Docker Compose設定ファイル
 services:
   web:
     image: node:20-alpine

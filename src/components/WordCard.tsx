@@ -1,7 +1,7 @@
-'use client';
-
-import React, { useState } from 'react';
-import { Volume2, Heart, Eye, EyeOff, Check, X } from 'lucide-react';
+"use client";
+// 単語の詳細を表示するカードコンポーネント
+import React, { useState } from "react";
+import { Volume2, Heart, Eye, EyeOff, Check, X } from "lucide-react";
 
 interface WordCardProps {
   word: {
@@ -18,11 +18,11 @@ interface WordCardProps {
   onAnswer?: (isCorrect: boolean) => void;
 }
 
-export const WordCard: React.FC<WordCardProps> = ({ 
-  word, 
+export const WordCard: React.FC<WordCardProps> = ({
+  word,
   isFavorite = false,
   onToggleFavorite,
-  onAnswer 
+  onAnswer,
 }) => {
   const [showMeaning, setShowMeaning] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -49,9 +49,9 @@ export const WordCard: React.FC<WordCardProps> = ({
       {/* Illustration Section */}
       <div className="relative h-80 bg-gradient-to-br from-secondary/20 to-accent/20">
         {word.image_url ? (
-          <img 
-            src={word.image_url} 
-            alt={word.word} 
+          <img
+            src={word.image_url}
+            alt={word.word}
             className="w-full h-full object-cover"
           />
         ) : (
@@ -60,7 +60,7 @@ export const WordCard: React.FC<WordCardProps> = ({
           </div>
         )}
       </div>
-      
+
       <div className="p-8">
         {/* Word Header */}
         <div className="flex justify-between items-start mb-6">
@@ -69,17 +69,23 @@ export const WordCard: React.FC<WordCardProps> = ({
               <h2 className="text-5xl font-bold text-gradient font-serif">
                 {word.word}
               </h2>
-              <button 
+              <button
                 onClick={playAudio}
                 disabled={isPlaying}
-                className={`p-2 rounded-full hover:bg-primary/10 transition-colors ${isPlaying ? 'text-primary animate-pulse' : 'text-muted-foreground'}`}
+                className={`p-2 rounded-full hover:bg-primary/10 transition-colors ${
+                  isPlaying
+                    ? "text-primary animate-pulse"
+                    : "text-muted-foreground"
+                }`}
               >
                 <Volume2 size={28} />
               </button>
             </div>
-            
+
             <div className="flex items-center gap-3">
-              <p className="text-xl text-muted-foreground italic">{word.pronunciation}</p>
+              <p className="text-xl text-muted-foreground italic">
+                {word.pronunciation}
+              </p>
               {word.part_of_speech && (
                 <span className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full font-medium">
                   {word.part_of_speech}
@@ -88,45 +94,57 @@ export const WordCard: React.FC<WordCardProps> = ({
             </div>
           </div>
 
-          <button 
+          <button
             onClick={onToggleFavorite}
-            className={`p-2 rounded-full hover:bg-accent/10 transition-colors ${isFavorite ? 'text-accent' : 'text-muted-foreground'}`}
+            className={`p-2 rounded-full hover:bg-accent/10 transition-colors ${
+              isFavorite ? "text-accent" : "text-muted-foreground"
+            }`}
           >
-            <Heart size={28} fill={isFavorite ? 'currentColor' : 'none'} />
+            <Heart size={28} fill={isFavorite ? "currentColor" : "none"} />
           </button>
         </div>
-        
+
         {/* Meaning Section */}
         <div className="space-y-6 pt-6 border-t border-border/50">
           <div className="flex justify-between items-center">
-            <h3 className="text-xl font-bold font-serif text-foreground">意味</h3>
+            <h3 className="text-xl font-bold font-serif text-foreground">
+              意味
+            </h3>
             <button
               onClick={() => setShowMeaning(!showMeaning)}
               className="flex items-center gap-2 text-primary font-semibold hover:opacity-80 transition-opacity"
             >
               {showMeaning ? (
-                <><EyeOff size={20} /> 隠す</>
+                <>
+                  <EyeOff size={20} /> 隠す
+                </>
               ) : (
-                <><Eye size={20} /> 表示</>
+                <>
+                  <Eye size={20} /> 表示
+                </>
               )}
             </button>
           </div>
-          
+
           {showMeaning ? (
             <div className="space-y-6 animate-fade-in">
               <div className="p-5 bg-muted/50 rounded-2xl">
-                <p className="text-2xl font-bold text-foreground">{word.meaning}</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {word.meaning}
+                </p>
               </div>
-              
+
               {word.example_sentence && (
                 <div className="space-y-2">
-                  <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">例文</h4>
+                  <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+                    例文
+                  </h4>
                   <p className="text-lg text-foreground italic border-l-4 border-primary pl-4 py-1">
                     {word.example_sentence}
                   </p>
                 </div>
               )}
-              
+
               {onAnswer && (
                 <div className="flex gap-4 mt-8">
                   <button
@@ -146,7 +164,9 @@ export const WordCard: React.FC<WordCardProps> = ({
             </div>
           ) : (
             <div className="h-24 flex items-center justify-center border-2 border-dashed border-border rounded-2xl bg-muted/20">
-              <p className="text-muted-foreground italic">「表示」を押して意味を確認</p>
+              <p className="text-muted-foreground italic">
+                「表示」を押して意味を確認
+              </p>
             </div>
           )}
         </div>

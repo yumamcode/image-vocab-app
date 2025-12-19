@@ -1,5 +1,5 @@
 'use client';
-
+// 管理者向けダッシュボード（単語管理・画像アップロード）
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase-browser';
 import { Loader2, Upload, Search, Check, AlertCircle } from 'lucide-react';

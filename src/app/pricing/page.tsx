@@ -1,5 +1,5 @@
 'use client';
-
+// 料金プランと単語パックの購入ページ
 import React, { useState } from 'react';
 import { Check, Crown, Sparkles, ArrowLeft, BookOpen, Loader2 } from 'lucide-react';
 import Link from 'next/link';

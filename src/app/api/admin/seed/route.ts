@@ -1,3 +1,4 @@
+// 初期単語データの投入（シーディング）API
 import { NextResponse } from 'next/server';
 import { seedWords } from '@/lib/seed';
 

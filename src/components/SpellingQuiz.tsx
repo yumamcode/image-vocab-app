@@ -1,5 +1,5 @@
 'use client';
-
+// スペル入力形式のクイズコンポーネント
 import React, { useState, useEffect, useRef } from 'react';
 import { Check, X, Volume2, ArrowRight, RefreshCw } from 'lucide-react';
 

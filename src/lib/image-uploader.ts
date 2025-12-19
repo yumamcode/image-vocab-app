@@ -1,3 +1,4 @@
+// サーバーサイドでの画像アップロード処理
 import { createAdminClient } from './supabase-admin';
 import fs from 'fs';
 import path from 'path';
