@@ -70,34 +70,16 @@ const FEATURES = [
     color: "bg-blue-500",
   },
   {
-    title: "間隔反復システム",
-    description: "忘却曲線に基づく最適なタイミングで復習を促進",
-    icon: TrendingUp,
-    color: "bg-orange-500",
-  },
-  {
     title: "多様なクイズ形式",
     description: "4択、スペル入力、画像・音声問題で多角的に学習",
     icon: Trophy,
     color: "bg-green-600",
   },
   {
-    title: "マイ単語帳",
-    description: "お気に入り登録とカスタムリストで効率的に学習",
-    icon: BookMarked,
-    color: "bg-blue-600",
-  },
-  {
     title: "学習進捗可視化",
     description: "グラフと統計で学習状況を一目で把握",
     icon: Star,
     color: "bg-amber-500",
-  },
-  {
-    title: "レスポンシブデザイン",
-    description: "PC・スマホ・タブレットで快適に学習",
-    icon: Sparkles,
-    color: "bg-purple-500",
   },
 ];
 
@@ -206,30 +188,21 @@ export default function Home() {
               </div>
 
               <div className="hidden md:flex items-center space-x-8">
-                <button className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium">
-                  <LayoutDashboard size={20} /> ダッシュボード
-                </button>
                 <button
                   onClick={startLearning}
                   className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
                 >
-                  <GraduationCap size={20} /> 学習
+                  <Brain size={20} /> イラスト学習
+                </button>
+                <button
+                  onClick={() => setView("quiz-menu")}
+                  className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
+                >
+                  <Trophy size={20} /> 多様なクイズ形式
                 </button>
                 <button className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium">
-                  <BarChart3 size={20} /> 進捗
+                  <Star size={20} /> 学習進捗可視化
                 </button>
-                <Link
-                  href="/pricing"
-                  className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
-                >
-                  料金プラン
-                </Link>
-                <Link
-                  href="/admin"
-                  className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
-                >
-                  管理者
-                </Link>
                 <div className="pl-4 border-l border-border h-6 flex items-center">
                   <span className="text-sm text-muted-foreground">
                     こんにちは、あまね
