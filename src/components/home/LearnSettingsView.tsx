@@ -1,12 +1,13 @@
 "use client";
 
 import { Brain, Sparkles } from "lucide-react";
+import { AppView } from "@/types/view";
 
 interface LearnSettingsViewProps {
   questionCount: number;
   setQuestionCount: (count: number) => void;
   beginLearning: (count: number) => void;
-  setView: (view: any) => void;
+  setView: (view: AppView) => void;
 }
 
 export function LearnSettingsView({

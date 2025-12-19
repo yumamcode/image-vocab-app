@@ -1,6 +1,7 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
+import { AppView } from "@/types/view";
 
 interface HeroSectionProps {
   startLearning: () => void;
@@ -35,7 +36,7 @@ export function HeroSection({ startLearning }: HeroSectionProps) {
 
 interface FeaturesSectionProps {
   features: any[];
-  setView: (view: any) => void;
+  setView: (view: AppView) => void;
   startLearning: () => void;
 }
 

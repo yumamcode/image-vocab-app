@@ -1,10 +1,11 @@
 "use client";
 
 import { BookOpen, Brain, Trophy, Volume2 as VolumeIcon, Type, ImageIcon } from "lucide-react";
+import { AppView } from "@/types/view";
 
 interface NavigationProps {
-  view: string;
-  setView: (view: any) => void;
+  view: AppView;
+  setView: (view: AppView) => void;
   startLearning: () => void;
   currentIndex: number;
   totalWords: number;

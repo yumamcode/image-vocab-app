@@ -18,18 +18,10 @@ import { SessionHeader } from "@/components/home/SessionHeader";
 import { SessionFinishedView } from "@/components/home/SessionFinishedView";
 import { QUIZ_MODES, FEATURES } from "@/constants/navigation";
 import { Loader2 } from "lucide-react";
+import { AppView } from "@/types/view";
 
 export default function Home() {
-  const [view, setView] = useState<
-    | "home"
-    | "learn-settings"
-    | "learn"
-    | "quiz-menu"
-    | "quiz-4-choice"
-    | "quiz-listening"
-    | "quiz-spelling"
-    | "quiz-image-choice"
-  >("home");
+  const [view, setView] = useState<AppView>("home");
   const [questionCount, setQuestionCount] = useState(10);
   const { user } = useUser();
   const { words, loading } = useWords();
