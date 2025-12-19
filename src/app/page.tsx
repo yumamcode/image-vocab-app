@@ -73,6 +73,7 @@ const FEATURES = [
 export default function Home() {
   const [view, setView] = useState<
     | "home"
+    | "learn-settings"
     | "learn"
     | "quiz-menu"
     | "quiz-4-choice"
@@ -81,6 +82,8 @@ export default function Home() {
     | "quiz-image-choice"
   >("home");
   const [words, setWords] = useState<any[]>([]);
+  const [sessionWords, setSessionWords] = useState<any[]>([]);
+  const [questionCount, setQuestionCount] = useState(10);
   const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
@@ -110,16 +113,16 @@ export default function Home() {
     fetchWords();
   }, []);
 
-  const currentWord = words[currentIndex];
+  const currentWord = sessionWords[currentIndex];
   const progressPercent =
-    words.length > 0
-      ? Math.round(((currentIndex + 1) / words.length) * 100)
+    sessionWords.length > 0
+      ? Math.round(((currentIndex + 1) / sessionWords.length) * 100)
       : 0;
 
   const handleAnswer = async (isCorrect: boolean) => {
     const quality = performanceToQuality(isCorrect);
 
-    if (user) {
+    if (user && currentWord) {
       // 現在の進捗を取得
       const { data: progress } = await supabase
         .from("user_word_progress")
@@ -153,12 +156,12 @@ export default function Home() {
       });
 
       if (error) console.error("Error saving progress:", error);
-    } else {
+    } else if (currentWord) {
       const result = calculateNextReview(quality, 0);
       console.log(`Word: ${currentWord.word}, Result:`, result);
     }
 
-    if (currentIndex < words.length - 1) {
+    if (currentIndex < sessionWords.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
       setIsFinished(true);
@@ -176,30 +179,51 @@ export default function Home() {
   };
 
   const startLearning = () => {
+    setView("learn-settings");
+  };
+
+  const beginLearning = (count: number) => {
+    // 単語をランダムにシャッフルして、指定された数だけ抽出
+    const shuffled = [...words].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, count === -1 ? words.length : count);
+    
+    setSessionWords(selected);
     setCurrentIndex(0);
     setIsFinished(false);
     setView("learn");
   };
 
-  const start4ChoiceQuiz = () => {
+  const start4ChoiceQuiz = (count: number = 10) => {
+    const shuffled = [...words].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, count);
+    setSessionWords(selected);
     setCurrentIndex(0);
     setIsFinished(false);
     setView("quiz-4-choice");
   };
 
-  const startListeningQuiz = () => {
+  const startListeningQuiz = (count: number = 10) => {
+    const shuffled = [...words].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, count);
+    setSessionWords(selected);
     setCurrentIndex(0);
     setIsFinished(false);
     setView("quiz-listening");
   };
 
-  const startSpellingQuiz = () => {
+  const startSpellingQuiz = (count: number = 10) => {
+    const shuffled = [...words].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, count);
+    setSessionWords(selected);
     setCurrentIndex(0);
     setIsFinished(false);
     setView("quiz-spelling");
   };
 
-  const startImageChoiceQuiz = () => {
+  const startImageChoiceQuiz = (count: number = 10) => {
+    const shuffled = [...words].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, count);
+    setSessionWords(selected);
     setCurrentIndex(0);
     setIsFinished(false);
     setView("quiz-image-choice");
@@ -246,14 +270,14 @@ export default function Home() {
             <div className="flex justify-between items-center h-20">
               <button
                 onClick={() =>
-                  view === "learn" || view === "quiz-menu"
+                  view === "learn" || view === "quiz-menu" || view === "learn-settings"
                     ? setView("home")
                     : setView("quiz-menu")
                 }
                 className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
               >
                 <span className="text-xl">←</span>{" "}
-                {view === "learn" || view === "quiz-menu"
+                {view === "learn" || view === "quiz-menu" || view === "learn-settings"
                   ? "ホームに戻る"
                   : "クイズメニューへ"}
               </button>
@@ -286,9 +310,9 @@ export default function Home() {
               </div>
 
               <div className="text-foreground font-bold text-lg">
-                {view !== "quiz-menu" && (
+                {view !== "quiz-menu" && view !== "learn-settings" && (
                   <>
-                    {currentIndex + 1} / {words.length}
+                    {currentIndex + 1} / {sessionWords.length}
                   </>
                 )}
               </div>
@@ -361,6 +385,54 @@ export default function Home() {
               ))}
             </div>
           </section>
+        </div>
+      ) : view === "learn-settings" ? (
+        /* Learning Settings View */
+        <div className="animate-fade-in">
+          <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="bg-white p-12 rounded-3xl shadow-xl border border-border/50 text-center">
+              <div className="bg-blue-100 w-20 h-20 rounded-2xl flex items-center justify-center text-blue-600 mx-auto mb-8 shadow-lg">
+                <Brain size={40} />
+              </div>
+              <h2 className="text-4xl font-bold text-gray-900 font-serif mb-4">
+                学習設定
+              </h2>
+              <p className="text-xl text-muted-foreground mb-12">
+                今回のセッションで学習する問題数を選択してください
+              </p>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-12">
+                {[5, 10, 20, 30, 50, -1].map((count) => (
+                  <button
+                    key={count}
+                    onClick={() => setQuestionCount(count)}
+                    className={`py-4 rounded-2xl font-bold text-xl transition-all border-2 ${
+                      questionCount === count
+                        ? "bg-blue-600 border-blue-600 text-white shadow-lg scale-105"
+                        : "bg-white border-gray-100 text-gray-600 hover:border-blue-200"
+                    }`}
+                  >
+                    {count === -1 ? "すべて" : `${count}問`}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={() => beginLearning(questionCount)}
+                  className="w-full py-5 bg-blue-600 text-white rounded-2xl font-bold text-2xl shadow-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-3"
+                >
+                  <Sparkles size={24} /> 学習を開始する
+                </button>
+                <button
+                  onClick={() => setView("home")}
+                  className="w-full py-5 bg-muted text-foreground rounded-2xl font-bold text-xl hover:bg-muted/80 transition-all"
+                >
+                  キャンセル
+                </button>
+              </div>
+            </div>
+          </main>
         </div>
       ) : view === "quiz-menu" ? (
         /* Quiz Menu View */
@@ -452,7 +524,7 @@ export default function Home() {
                         進捗: {progressPercent}%
                       </span>
                       <span className="text-sm font-bold text-muted-foreground">
-                        {currentIndex + 1} / {words.length}
+                        {currentIndex + 1} / {sessionWords.length}
                       </span>
                     </div>
                     <div className="w-full h-3 bg-muted rounded-full overflow-hidden shadow-inner">
@@ -473,10 +545,10 @@ export default function Home() {
                       />
                       <p className="text-gray-500">音声データを準備中...</p>
                     </div>
-                  ) : words.length > 0 ? (
+                  ) : sessionWords.length > 0 ? (
                     <ListeningQuiz
                       currentWord={currentWord}
-                      allWords={words}
+                      allWords={sessionWords}
                       onAnswer={handleAnswer}
                     />
                   ) : (
@@ -527,7 +599,7 @@ export default function Home() {
                         進捗: {progressPercent}%
                       </span>
                       <span className="text-sm font-bold text-muted-foreground">
-                        {currentIndex + 1} / {words.length}
+                        {currentIndex + 1} / {sessionWords.length}
                       </span>
                     </div>
                     <div className="w-full h-3 bg-muted rounded-full overflow-hidden shadow-inner">
@@ -548,7 +620,7 @@ export default function Home() {
                       />
                       <p className="text-gray-500">問題を準備中...</p>
                     </div>
-                  ) : words.length > 0 ? (
+                  ) : sessionWords.length > 0 ? (
                     <SpellingQuiz
                       currentWord={currentWord}
                       onAnswer={handleAnswer}
@@ -601,7 +673,7 @@ export default function Home() {
                         進捗: {progressPercent}%
                       </span>
                       <span className="text-sm font-bold text-muted-foreground">
-                        {currentIndex + 1} / {words.length}
+                        {currentIndex + 1} / {sessionWords.length}
                       </span>
                     </div>
                     <div className="w-full h-3 bg-muted rounded-full overflow-hidden shadow-inner">
@@ -622,10 +694,10 @@ export default function Home() {
                       />
                       <p className="text-gray-500">画像を読み込み中...</p>
                     </div>
-                  ) : words.length > 0 ? (
+                  ) : sessionWords.length > 0 ? (
                     <ImageChoiceQuiz
                       currentWord={currentWord}
-                      allWords={words}
+                      allWords={sessionWords}
                       onAnswer={handleAnswer}
                     />
                   ) : (
@@ -676,7 +748,7 @@ export default function Home() {
                         進捗: {progressPercent}%
                       </span>
                       <span className="text-sm font-bold text-muted-foreground">
-                        {currentIndex + 1} / {words.length}
+                        {currentIndex + 1} / {sessionWords.length}
                       </span>
                     </div>
                     <div className="w-full h-3 bg-muted rounded-full overflow-hidden shadow-inner">
@@ -697,10 +769,10 @@ export default function Home() {
                       />
                       <p className="text-gray-500">問題を生成中...</p>
                     </div>
-                  ) : words.length > 0 ? (
+                  ) : sessionWords.length > 0 ? (
                     <MultipleChoiceQuiz
                       currentWord={currentWord}
-                      allWords={words}
+                      allWords={sessionWords}
                       onAnswer={handleAnswer}
                     />
                   ) : (
@@ -723,7 +795,7 @@ export default function Home() {
                   🎉 お疲れ様でした！
                 </h2>
                 <p className="text-xl text-muted-foreground mb-10">
-                  今日の5単語の学習が完了しました。
+                  {sessionWords.length}単語の学習が完了しました。
                   <br />
                   素晴らしい進歩です！
                 </p>
@@ -752,7 +824,7 @@ export default function Home() {
                       進捗: {progressPercent}%
                     </span>
                     <span className="text-sm font-bold text-muted-foreground">
-                      {currentIndex + 1} / {words.length}
+                      {currentIndex + 1} / {sessionWords.length}
                     </span>
                   </div>
                   <div className="w-full h-3 bg-muted rounded-full overflow-hidden shadow-inner">
@@ -773,7 +845,7 @@ export default function Home() {
                     />
                     <p className="text-gray-500">学習データを読み込み中...</p>
                   </div>
-                ) : words.length > 0 ? (
+                ) : sessionWords.length > 0 ? (
                   <WordCard
                     word={currentWord}
                     isFavorite={favorites.has(currentWord.id)}
