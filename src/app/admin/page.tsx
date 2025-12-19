@@ -2,11 +2,24 @@
 // 管理者向けダッシュボード（単語管理・画像アップロード）
 import React, { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase-browser";
-import { Loader2, Upload, Search, Check } from "lucide-react";
+import { Loader2, Upload, Search, Check, X } from "lucide-react";
 import Link from "next/link";
 
+interface Word {
+  id: number;
+  word: string;
+  meaning: string;
+  pronunciation: string | null;
+  part_of_speech: string | null;
+  category: string | null;
+  difficulty: "beginner" | "intermediate" | "advanced";
+  image_url: string | null;
+  audio_url: string | null;
+  created_at: string;
+}
+
 export default function AdminPage() {
-  const [words, setWords] = useState<any[]>([]);
+  const [words, setWords] = useState<Word[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [uploadingId, setUploadingId] = useState<number | null>(null);
@@ -22,11 +35,61 @@ export default function AdminPage() {
     pronunciation: "",
     category: "general",
     part_of_speech: "noun",
-    difficulty: "beginner",
+    difficulty: "beginner" as Word["difficulty"],
   });
   const [isAdding, setIsAdding] = useState(false);
   const [dragOverId, setDragOverId] = useState<number | null>(null);
+  const [editingWord, setEditingWord] = useState<Word | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const supabase = createClient();
+
+  const fetchWords = React.useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("words")
+      .select("*")
+      .order("word", { ascending: true });
+
+    if (data) setWords(data as Word[]);
+    if (error) console.error("Error fetching words:", error);
+    setLoading(false);
+  }, [supabase]);
+
+  useEffect(() => {
+    fetchWords();
+  }, [fetchWords]);
+
+  const handleEditClick = (word: Word) => {
+    setEditingWord({ ...word });
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateWord = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingWord) return;
+
+    setLoading(true);
+    const { error } = await supabase
+      .from("words")
+      .update({
+        word: editingWord.word,
+        meaning: editingWord.meaning,
+        pronunciation: editingWord.pronunciation,
+        part_of_speech: editingWord.part_of_speech,
+        difficulty: editingWord.difficulty,
+        category: editingWord.category,
+      })
+      .eq("id", editingWord.id);
+
+    if (error) {
+      alert("更新に失敗しました: " + error.message);
+    } else {
+      setIsEditModalOpen(false);
+      setEditingWord(null);
+      fetchWords();
+    }
+    setLoading(false);
+  };
 
   const handleAddWord = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,28 +159,16 @@ export default function AdminPage() {
       setWords(
         words.map((w) => (w.id === wordId ? { ...w, image_url: publicUrl } : w))
       );
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert("画像のアップロードに失敗しました: " + err.message);
+      alert(
+        "画像のアップロードに失敗しました: " +
+          (err instanceof Error ? err.message : "不明なエラー")
+      );
     } finally {
       setUploadingId(null);
     }
   };
-
-  const fetchWords = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("words")
-      .select("*")
-      .order("word", { ascending: true });
-
-    if (data) setWords(data);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchWords();
-  }, []);
 
   const handleBulkImageUpload = async () => {
     setUploadingBulk(true);
@@ -136,7 +187,7 @@ export default function AdminPage() {
       } else {
         alert("エラーが発生しました: " + data.error);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       alert("エラーが発生しました");
     } finally {
@@ -243,7 +294,7 @@ export default function AdminPage() {
       // 1. Upload to Supabase Storage
       const fileExt = file.name.split(".").pop();
       const fileName = `${wordId}_${Math.random()}.${fileExt}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("word-images")
         .upload(fileName, file);
 
@@ -267,9 +318,12 @@ export default function AdminPage() {
         words.map((w) => (w.id === wordId ? { ...w, image_url: publicUrl } : w))
       );
       alert("画像をアップロードしました");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert("アップロード失敗: " + err.message);
+      alert(
+        "アップロード失敗: " +
+          (err instanceof Error ? err.message : "不明なエラー")
+      );
     } finally {
       setUploadingId(null);
     }
@@ -320,7 +374,7 @@ export default function AdminPage() {
         </header>
 
         {isAdding && (
-          <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-200 mb-8 animate-fade-in">
+          <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-200 mb-8 animate-fade-in text-gray-900">
             <h2 className="text-2xl font-bold mb-6">新規単語登録</h2>
             <form
               onSubmit={handleAddWord}
@@ -396,7 +450,7 @@ export default function AdminPage() {
                   onChange={(e) =>
                     setNewWord({
                       ...newWord,
-                      difficulty: e.target.value as any,
+                      difficulty: e.target.value as Word["difficulty"],
                     })
                   }
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 outline-none transition-all"
@@ -454,7 +508,9 @@ export default function AdminPage() {
                 className="animate-spin text-primary mx-auto"
                 size={48}
               />
-              <div className="text-xl font-bold">アップロード中...</div>
+              <div className="text-xl font-bold text-gray-900">
+                アップロード中...
+              </div>
               {bulkStatus && (
                 <div className="text-gray-500">
                   {bulkStatus.current} / {bulkStatus.total} 枚を処理中
@@ -466,7 +522,7 @@ export default function AdminPage() {
               <div className="bg-primary/10 p-4 rounded-full mb-4">
                 <Upload className="text-primary" size={40} />
               </div>
-              <h2 className="text-2xl font-bold mb-2">
+              <h2 className="text-2xl font-bold mb-2 text-gray-900">
                 画像をここにドラッグ＆ドロップ
               </h2>
               <p className="text-gray-500 mb-6">
@@ -498,7 +554,7 @@ export default function AdminPage() {
               <input
                 type="text"
                 placeholder="単語や意味で検索..."
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-gray-900"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -550,10 +606,11 @@ export default function AdminPage() {
                   filteredWords.map((word) => (
                     <tr
                       key={word.id}
+                      onClick={() => handleEditClick(word)}
                       onDragOver={(e) => handleRowDragOver(e, word.id)}
                       onDragLeave={handleRowDragLeave}
                       onDrop={(e) => handleRowDrop(e, word.id)}
-                      className={`hover:bg-gray-50 transition-all ${
+                      className={`hover:bg-gray-50 transition-all cursor-pointer ${
                         dragOverId === word.id
                           ? "bg-blue-50 ring-2 ring-blue-400 ring-inset scale-[1.01]"
                           : ""
@@ -593,7 +650,10 @@ export default function AdminPage() {
                           </div>
                         )}
                       </td>
-                      <td className="px-6 py-4">
+                      <td
+                        className="px-6 py-4"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <label
                           className={`cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm transition-all ${
                             uploadingId === word.id
@@ -624,6 +684,151 @@ export default function AdminPage() {
           </div>
         </div>
       </div>
+
+      {/* 編集モーダル */}
+      {isEditModalOpen && editingWord && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in text-gray-900">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-scale-in">
+            <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+              <h2 className="text-2xl font-bold">単語情報を編集</h2>
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateWord} className="p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    英単語
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editingWord.word}
+                    onChange={(e) =>
+                      setEditingWord({ ...editingWord, word: e.target.value })
+                    }
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    意味
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editingWord.meaning}
+                    onChange={(e) =>
+                      setEditingWord({
+                        ...editingWord,
+                        meaning: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    発音記号
+                  </label>
+                  <input
+                    type="text"
+                    value={editingWord.pronunciation || ""}
+                    onChange={(e) =>
+                      setEditingWord({
+                        ...editingWord,
+                        pronunciation: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    品詞
+                  </label>
+                  <select
+                    value={editingWord.part_of_speech || "noun"}
+                    onChange={(e) =>
+                      setEditingWord({
+                        ...editingWord,
+                        part_of_speech: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all"
+                  >
+                    <option value="noun">名詞 (noun)</option>
+                    <option value="verb">動詞 (verb)</option>
+                    <option value="adj">形容詞 (adj)</option>
+                    <option value="adv">副詞 (adv)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    難易度
+                  </label>
+                  <select
+                    value={editingWord.difficulty || "beginner"}
+                    onChange={(e) =>
+                      setEditingWord({
+                        ...editingWord,
+                        difficulty: e.target.value as Word["difficulty"],
+                      })
+                    }
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all"
+                  >
+                    <option value="beginner">初級 (beginner)</option>
+                    <option value="intermediate">中級 (intermediate)</option>
+                    <option value="advanced">上級 (advanced)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    カテゴリー
+                  </label>
+                  <input
+                    type="text"
+                    value={editingWord.category || ""}
+                    onChange={(e) =>
+                      setEditingWord({
+                        ...editingWord,
+                        category: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="flex-1 px-6 py-4 border-2 border-gray-200 rounded-xl font-bold text-gray-600 hover:bg-gray-50 transition-all"
+                >
+                  キャンセル
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 px-6 py-4 bg-primary text-white rounded-xl font-bold hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center"
+                >
+                  {loading ? (
+                    <Loader2 className="animate-spin mx-auto" />
+                  ) : (
+                    "保存する"
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
