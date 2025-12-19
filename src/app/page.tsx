@@ -14,16 +14,9 @@ import {
 import {
   BookOpen,
   Sparkles,
-  LayoutDashboard,
-  GraduationCap,
-  BarChart3,
   Loader2,
   Brain,
-  TrendingUp,
   Trophy,
-  BookMarked,
-  Smartphone,
-  Star,
   Type,
   ImageIcon,
   Volume2 as VolumeIcon,
@@ -75,12 +68,6 @@ const FEATURES = [
     icon: Trophy,
     color: "bg-green-600",
   },
-  {
-    title: "学習進捗可視化",
-    description: "グラフと統計で学習状況を一目で把握",
-    icon: Star,
-    color: "bg-amber-500",
-  },
 ];
 
 export default function Home() {
@@ -98,7 +85,18 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
+  const [user, setUser] = useState<any>(null);
   const supabase = createClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, [supabase]);
 
   const fetchWords = async () => {
     setLoading(true);
@@ -118,10 +116,47 @@ export default function Home() {
       ? Math.round(((currentIndex + 1) / words.length) * 100)
       : 0;
 
-  const handleAnswer = (isCorrect: boolean) => {
+  const handleAnswer = async (isCorrect: boolean) => {
     const quality = performanceToQuality(isCorrect);
-    const result = calculateNextReview(quality, 0);
-    console.log(`Word: ${currentWord.word}, Result:`, result);
+
+    if (user) {
+      // 現在の進捗を取得
+      const { data: progress } = await supabase
+        .from("user_word_progress")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("word_id", currentWord.id)
+        .maybeSingle();
+
+      const result = calculateNextReview(
+        quality,
+        progress?.correct_count || 0,
+        progress?.ease_factor || 2.5,
+        progress?.interval || 0
+      );
+
+      // 進捗を更新
+      const { error } = await supabase.from("user_word_progress").upsert({
+        user_id: user.id,
+        word_id: currentWord.id,
+        status: result.status,
+        correct_count: isCorrect
+          ? (progress?.correct_count || 0) + 1
+          : progress?.correct_count || 0,
+        incorrect_count: !isCorrect
+          ? (progress?.incorrect_count || 0) + 1
+          : progress?.incorrect_count || 0,
+        ease_factor: result.ease_factor,
+        interval: result.interval,
+        next_review_date: result.next_review_date.toISOString(),
+        last_reviewed_at: new Date().toISOString(),
+      });
+
+      if (error) console.error("Error saving progress:", error);
+    } else {
+      const result = calculateNextReview(quality, 0);
+      console.log(`Word: ${currentWord.word}, Result:`, result);
+    }
 
     if (currentIndex < words.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -200,14 +235,6 @@ export default function Home() {
                 >
                   <Trophy size={20} /> 多様なクイズ形式
                 </button>
-                <button className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium">
-                  <Star size={20} /> 学習進捗可視化
-                </button>
-                <div className="pl-4 border-l border-border h-6 flex items-center">
-                  <span className="text-sm text-muted-foreground">
-                    こんにちは、あまね
-                  </span>
-                </div>
               </div>
             </div>
           </div>
@@ -293,12 +320,6 @@ export default function Home() {
                 >
                   <Sparkles size={24} /> 学習を始める
                 </button>
-                <Link
-                  href="/pricing"
-                  className="bg-white text-foreground border-2 border-border text-xl px-10 py-5 rounded-2xl shadow-md hover:bg-muted/50 transition-all font-bold flex items-center justify-center"
-                >
-                  料金プラン
-                </Link>
               </div>
             </div>
           </main>
@@ -318,12 +339,14 @@ export default function Home() {
               {FEATURES.map((feature, index) => (
                 <div
                   key={index}
-                  onClick={() =>
-                    feature.title === "多様なクイズ形式" && setView("quiz-menu")
-                  }
-                  className={`bg-white p-8 rounded-3xl border border-border/50 shadow-sm hover:shadow-xl transition-all group ${
-                    feature.title === "多様なクイズ形式" ? "cursor-pointer" : ""
-                  }`}
+                  onClick={() => {
+                    if (feature.title === "多様なクイズ形式") {
+                      setView("quiz-menu");
+                    } else if (feature.title === "イラスト学習") {
+                      startLearning();
+                    }
+                  }}
+                  className={`bg-white p-8 rounded-3xl border border-border/50 shadow-sm hover:shadow-xl transition-all group cursor-pointer`}
                 >
                   <div
                     className={`${feature.color} w-14 h-14 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform`}
