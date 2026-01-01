@@ -2,30 +2,52 @@
 
 import { BookOpen, Brain, Trophy, Volume2 as VolumeIcon, Type, ImageIcon } from "lucide-react";
 import { AppView } from "@/types/view";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface NavigationProps {
   view: AppView;
-  setView: (view: AppView) => void;
+  setView?: (view: AppView) => void;
   startLearning: () => void;
   currentIndex: number;
   totalWords: number;
 }
 
 export function Navigation({ view, setView, startLearning, currentIndex, totalWords }: NavigationProps) {
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (setView) {
+      if (view === "learn" || view === "quiz-menu" || view === "learn-settings") {
+        setView("home");
+      } else {
+        setView("quiz-menu");
+      }
+      return;
+    }
+
+    // fallback to routing
+    if (view === "learn" || view === "quiz-menu" || view === "learn-settings") {
+      router.push("/");
+    } else {
+      router.push("/quiz");
+    }
+  };
+
   if (view === "home") {
     return (
       <nav className="border-b border-border/40 backdrop-blur-md bg-background/80 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <div
+            <Link
+              href="/"
               className="flex items-center space-x-3 cursor-pointer"
-              onClick={() => setView("home")}
             >
               <BookOpen className="h-9 w-9 text-primary" />
               <span className="text-3xl font-bold text-gradient font-serif">
                 Imavo
               </span>
-            </div>
+            </Link>
 
             <div className="hidden md:flex items-center space-x-8">
               <button
@@ -34,12 +56,12 @@ export function Navigation({ view, setView, startLearning, currentIndex, totalWo
               >
                 <Brain size={20} /> イラスト学習
               </button>
-              <button
-                onClick={() => setView("quiz-menu")}
+              <Link
+                href="/quiz"
                 className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
               >
                 <Trophy size={20} /> 多様なクイズ形式
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -52,11 +74,7 @@ export function Navigation({ view, setView, startLearning, currentIndex, totalWo
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <button
-            onClick={() =>
-              view === "learn" || view === "quiz-menu" || view === "learn-settings"
-                ? setView("home")
-                : setView("quiz-menu")
-            }
+            onClick={handleBack}
             className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
           >
             <span className="text-xl">←</span>{" "}
