@@ -1,6 +1,13 @@
 "use client";
 
-import { BookOpen, Brain, Trophy, Volume2 as VolumeIcon, Type, ImageIcon } from "lucide-react";
+import {
+  BookOpen,
+  Brain,
+  Trophy,
+  Volume2 as VolumeIcon,
+  Type,
+  ImageIcon,
+} from "lucide-react";
 import { AppView } from "@/types/view";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,12 +20,22 @@ interface NavigationProps {
   totalWords: number;
 }
 
-export function Navigation({ view, setView, startLearning, currentIndex, totalWords }: NavigationProps) {
+export function Navigation({
+  view,
+  setView,
+  startLearning,
+  currentIndex,
+  totalWords,
+}: NavigationProps) {
   const router = useRouter();
 
   const handleBack = () => {
     if (setView) {
-      if (view === "learn" || view === "quiz-menu" || view === "learn-settings") {
+      if (
+        view === "learn" ||
+        view === "quiz-menu" ||
+        view === "learn-settings"
+      ) {
         setView("home");
       } else {
         setView("quiz-menu");
@@ -78,7 +95,9 @@ export function Navigation({ view, setView, startLearning, currentIndex, totalWo
             className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
           >
             <span className="text-xl">←</span>{" "}
-            {view === "learn" || view === "quiz-menu" || view === "learn-settings"
+            {view === "learn" ||
+            view === "quiz-menu" ||
+            view === "learn-settings"
               ? "ホームに戻る"
               : "クイズメニューへ"}
           </button>
@@ -122,4 +141,3 @@ export function Navigation({ view, setView, startLearning, currentIndex, totalWo
     </nav>
   );
 }
-
