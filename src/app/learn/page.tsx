@@ -3,6 +3,7 @@
 import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { WordCard } from "@/components/learn/WordCard";
+import { PrefetchImages } from "@/components/learn/PrefetchImages";
 import { LearnNavigation } from "@/components/navigation/LearnNavigation";
 import { SessionHeader } from "@/components/session/SessionHeader";
 import { SessionFinishedView } from "@/components/session/SessionFinishedView";
@@ -39,6 +40,10 @@ function LearnContent() {
 
   return (
     <div className="min-h-screen bg-background">
+      <PrefetchImages
+        imageUrls={sessionWords.map((w) => w.image_url)}
+        currentIndex={currentIndex}
+      />
       <LearnNavigation
         view="learn"
         onBack={() => setView("home")}
