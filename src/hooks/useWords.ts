@@ -1,24 +1,36 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase-browser";
+import { Word } from "@/types/word";
 
 export function useWords() {
-  const [words, setWords] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const supabase = createClient();
+  const [words, setWords] = useState<Word[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Supabase クライアントを安定化させる
+  const supabase = useMemo(() => createClient(), []);
 
   const fetchWords = useCallback(async () => {
-    setLoading(true);
+    // await の前に同期的 setState を行わないことで useEffect 内の警告を回避する
     const { data, error } = await supabase.from("words").select("*").limit(100);
-    if (data) setWords(data);
+
+    if (error) {
+      console.error("Error fetching words:", error);
+    }
+
+    if (data) {
+      setWords(data as Word[]);
+    }
     setLoading(false);
   }, [supabase]);
 
   useEffect(() => {
-    fetchWords();
+    const initFetch = async () => {
+      await fetchWords();
+    };
+    initFetch();
   }, [fetchWords]);
 
   return { words, loading, fetchWords };
 }
-

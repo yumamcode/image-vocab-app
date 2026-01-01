@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase-browser";
 import { Word, NewWord } from "@/types/word";
 
@@ -18,10 +18,13 @@ export function useAdminWords() {
     difficulty: "beginner",
   });
 
-  const supabase = createClient();
+  // Supabase クライアントを安定化させる
+  const supabase = useMemo(() => createClient(), []);
 
   const fetchWords = useCallback(async () => {
-    setLoading(true);
+    // 同期的（await の前）に setState を行うと useEffect 内で警告が出るため、
+    // ローディング開始の setState は必要な時だけ呼び出し側で行うか、
+    // ここでは await の後にのみ状態更新を行う。
     const { data, error } = await supabase
       .from("words")
       .select("*")
@@ -33,7 +36,11 @@ export function useAdminWords() {
   }, [supabase]);
 
   useEffect(() => {
-    fetchWords();
+    // 非同期関数を定義して呼び出すことで、useEffect 内での直接的な状態更新を避ける
+    const initFetch = async () => {
+      await fetchWords();
+    };
+    initFetch();
   }, [fetchWords]);
 
   const handleAddWord = async (e: React.FormEvent) => {
@@ -44,6 +51,7 @@ export function useAdminWords() {
     const { error } = await supabase.from("words").insert([newWord]);
     if (error) {
       alert("単語の登録に失敗しました: " + error.message);
+      setLoading(false);
     } else {
       setNewWord({
         word: "",
@@ -54,9 +62,9 @@ export function useAdminWords() {
         difficulty: "beginner",
       });
       setIsAdding(false);
+      // 再取得。fetchWords 内で loading は false になる
       fetchWords();
     }
-    setLoading(false);
   };
 
   const handleUpdateWord = async (e: React.FormEvent) => {
@@ -78,12 +86,13 @@ export function useAdminWords() {
 
     if (error) {
       alert("更新に失敗しました: " + error.message);
+      setLoading(false);
     } else {
       setIsEditModalOpen(false);
       setEditingWord(null);
+      // 再取得。fetchWords 内で loading は false になる
       fetchWords();
     }
-    setLoading(false);
   };
 
   const handleEditClick = (word: Word) => {
@@ -120,4 +129,3 @@ export function useAdminWords() {
     handleEditClick,
   };
 }
-
