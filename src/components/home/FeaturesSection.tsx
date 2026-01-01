@@ -5,10 +5,9 @@ import { AppView } from "@/types/view";
 interface FeaturesSectionProps {
   features: any[];
   setView: (view: AppView) => void;
-  startLearning: () => void;
 }
 
-export function FeaturesSection({ features, setView, startLearning }: FeaturesSectionProps) {
+export function FeaturesSection({ features, setView }: FeaturesSectionProps) {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 border-t border-border/40">
       <div className="text-center mb-16 space-y-4">
@@ -28,7 +27,7 @@ export function FeaturesSection({ features, setView, startLearning }: FeaturesSe
               if (feature.title === "多様なクイズ形式") {
                 setView("quiz-menu");
               } else if (feature.title === "イラスト学習") {
-                startLearning();
+                setView("learn-settings");
               }
             }}
             className={`bg-white p-8 rounded-3xl border border-border/50 shadow-sm hover:shadow-xl transition-all group cursor-pointer`}

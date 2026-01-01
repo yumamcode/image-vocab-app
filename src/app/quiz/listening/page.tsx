@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { ListeningQuiz } from "@/components/ListeningQuiz";
 import { Navigation } from "@/components/home/Navigation";
 import { SessionHeader } from "@/components/home/SessionHeader";
 import { SessionFinishedView } from "@/components/home/SessionFinishedView";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 import { Loader2 } from "lucide-react";
 
 function ListeningQuizContent() {
-  const router = useRouter();
+  const { setView } = useAppNavigation();
   const searchParams = useSearchParams();
   const countParam = searchParams.get("count");
   const count = countParam ? parseInt(countParam) : 10;
@@ -37,7 +38,7 @@ function ListeningQuizContent() {
     <div className="min-h-screen bg-background">
       <Navigation
         view="quiz-listening"
-        startLearning={() => router.push("/learn/settings")}
+        startLearning={() => setView("learn-settings")}
         currentIndex={currentIndex}
         totalWords={sessionWords.length}
       />
@@ -48,7 +49,7 @@ function ListeningQuizContent() {
             title="🎉 リスニング完了！"
             description="素晴らしい耳をお持ちですね！全問終了しました。"
             onRestart={() => startSession(count)}
-            onHome={() => router.push("/")}
+            onHome={() => setView("home")}
             buttonColorClass="bg-orange-500"
           />
         ) : (

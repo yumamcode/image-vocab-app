@@ -1,16 +1,16 @@
 "use client";
 // アプリケーションのトップページコンポーネント
-import { useRouter } from "next/navigation";
 import { Navigation } from "@/components/home/Navigation";
 import { HeroSection } from "@/components/home/HeroSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { FEATURES } from "@/constants/navigation";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 export default function Home() {
-  const router = useRouter();
+  const { setView } = useAppNavigation();
 
   const startLearning = () => {
-    router.push("/learn/settings");
+    setView("learn-settings");
   };
 
   return (
@@ -19,16 +19,7 @@ export default function Home() {
 
       <div className="animate-fade-in">
         <HeroSection startLearning={startLearning} />
-        <FeaturesSection
-          features={FEATURES}
-          setView={(v) => {
-            if (v === "home") router.push("/");
-            else if (v === "quiz-menu") router.push("/quiz");
-            else if (v === "learn-settings") router.push("/learn/settings");
-            else router.push(`/${v}`);
-          }}
-          startLearning={startLearning}
-        />
+        <FeaturesSection features={FEATURES} setView={setView} />
       </div>
     </div>
   );

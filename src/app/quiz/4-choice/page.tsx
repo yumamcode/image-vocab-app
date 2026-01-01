@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { MultipleChoiceQuiz } from "@/components/MultipleChoiceQuiz";
 import { Navigation } from "@/components/home/Navigation";
 import { SessionHeader } from "@/components/home/SessionHeader";
 import { SessionFinishedView } from "@/components/home/SessionFinishedView";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 import { Loader2 } from "lucide-react";
 
 function MultipleChoiceQuizContent() {
-  const router = useRouter();
+  const { setView } = useAppNavigation();
   const searchParams = useSearchParams();
   const countParam = searchParams.get("count");
   const count = countParam ? parseInt(countParam) : 10;
@@ -37,7 +38,7 @@ function MultipleChoiceQuizContent() {
     <div className="min-h-screen bg-background">
       <Navigation
         view="quiz-4-choice"
-        startLearning={() => router.push("/learn/settings")}
+        startLearning={() => setView("learn-settings")}
         currentIndex={currentIndex}
         totalWords={sessionWords.length}
       />
@@ -48,7 +49,7 @@ function MultipleChoiceQuizContent() {
             title="🎉 クイズ完了！"
             description="全問終了しました。素晴らしい！"
             onRestart={() => startSession(count)}
-            onHome={() => router.push("/")}
+            onHome={() => setView("home")}
             buttonColorClass="gradient-primary"
           />
         ) : (

@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { AppView } from "@/types/view";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 interface NavigationProps {
   view: AppView;
@@ -22,32 +22,19 @@ interface NavigationProps {
 
 export function Navigation({
   view,
-  setView,
+  setView: propsSetView,
   startLearning,
   currentIndex,
   totalWords,
 }: NavigationProps) {
-  const router = useRouter();
+  const { setView } = useAppNavigation();
+  const effectiveSetView = propsSetView || setView;
 
   const handleBack = () => {
-    if (setView) {
-      if (
-        view === "learn" ||
-        view === "quiz-menu" ||
-        view === "learn-settings"
-      ) {
-        setView("home");
-      } else {
-        setView("quiz-menu");
-      }
-      return;
-    }
-
-    // fallback to routing
     if (view === "learn" || view === "quiz-menu" || view === "learn-settings") {
-      router.push("/");
+      effectiveSetView("home");
     } else {
-      router.push("/quiz");
+      effectiveSetView("quiz-menu");
     }
   };
 
