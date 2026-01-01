@@ -1,21 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { Brain, Sparkles } from "lucide-react";
-import { AppView } from "@/types/view";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
-interface LearnSettingsViewProps {
-  questionCount: number;
-  setQuestionCount: (count: number) => void;
-  beginLearning: (count: number) => void;
-  setView: (view: AppView) => void;
-}
+export function LearnSettingsView() {
+  const { setView } = useAppNavigation();
+  const [questionCount, setQuestionCount] = useState(10);
 
-export function LearnSettingsView({
-  questionCount,
-  setQuestionCount,
-  beginLearning,
-  setView,
-}: LearnSettingsViewProps) {
+  const handleBeginLearning = () => {
+    setView("learn", { count: questionCount });
+  };
+
   return (
     <div className="animate-fade-in">
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -48,7 +44,7 @@ export function LearnSettingsView({
 
           <div className="flex flex-col gap-4">
             <button
-              onClick={() => beginLearning(questionCount)}
+              onClick={handleBeginLearning}
               className="w-full py-5 bg-blue-600 text-white rounded-2xl font-bold text-2xl shadow-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-3"
             >
               <Sparkles size={24} /> 学習を開始する
@@ -65,4 +61,3 @@ export function LearnSettingsView({
     </div>
   );
 }
-
