@@ -2,13 +2,15 @@
 
 import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { WordCard } from "@/components/learn/WordCard";
 import { LearnNavigation } from "@/components/navigation/LearnNavigation";
+import { SessionHeader } from "@/components/session/SessionHeader";
 import { SessionFinishedView } from "@/components/session/SessionFinishedView";
-import { ActiveLearningView } from "@/components/learn/ActiveLearningView";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 function LearnContent() {
   const { setView } = useAppNavigation();
@@ -29,7 +31,6 @@ function LearnContent() {
     toggleFavorite,
   } = useLearningSession(words);
 
-  // セッションの初期化
   useEffect(() => {
     if (words.length > 0 && sessionWords.length === 0 && !isFinished) {
       startSession(count);
@@ -55,17 +56,54 @@ function LearnContent() {
             buttonColorClass="gradient-primary"
           />
         ) : (
-          <ActiveLearningView
-            loading={loading}
-            sessionWords={sessionWords}
-            currentWord={currentWord}
-            progressPercent={progressPercent}
-            currentIndex={currentIndex}
-            favorites={favorites}
-            toggleFavorite={toggleFavorite}
-            handleAnswer={handleAnswer}
-            onInterrupt={() => setView("home")}
-          />
+          <div className="space-y-12">
+            <SessionHeader
+              progressPercent={progressPercent}
+              currentIndex={currentIndex}
+              totalWords={sessionWords.length}
+              colorClass="text-primary"
+            />
+
+            <div className="flex flex-col items-center">
+              {loading ? (
+                <div className="py-20 text-center">
+                  <Loader2
+                    className="animate-spin mx-auto text-primary mb-4"
+                    size={48}
+                  />
+                  <p className="text-gray-500">学習データを読み込み中...</p>
+                </div>
+              ) : sessionWords.length > 0 ? (
+                <WordCard
+                  word={currentWord}
+                  isFavorite={favorites.has(currentWord?.id)}
+                  onToggleFavorite={() => toggleFavorite(currentWord.id)}
+                  onAnswer={handleAnswer}
+                />
+              ) : (
+                <div className="py-20 text-center">
+                  <p className="text-gray-500 mb-4">
+                    単語データがありません。管理画面から投入してください。
+                  </p>
+                  <Link
+                    href="/admin"
+                    className="text-primary font-bold hover:underline"
+                  >
+                    管理者画面へ
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={() => setView("home")}
+                className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-2"
+              >
+                ← 学習を中断してホームに戻る
+              </button>
+            </div>
+          </div>
         )}
       </main>
     </div>
