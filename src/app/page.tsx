@@ -2,7 +2,8 @@
 // アプリケーションのトップページコンポーネント
 import { useRouter } from "next/navigation";
 import { Navigation } from "@/components/home/Navigation";
-import { HeroSection, FeaturesSection } from "@/components/home/HomeView";
+import { HeroSection } from "@/components/home/HeroSection";
+import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { FEATURES } from "@/constants/navigation";
 
 export default function Home() {
