@@ -3,6 +3,7 @@
 import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { ImageChoiceQuiz } from "@/components/quiz/ImageChoiceQuiz";
+import { PrefetchImages } from "@/components/common/PrefetchImages";
 import { QuizNavigation } from "@/components/navigation/QuizNavigation";
 import { SessionHeader } from "@/components/session/SessionHeader";
 import { SessionFinishedView } from "@/components/session/SessionFinishedView";
@@ -36,6 +37,13 @@ function ImageChoiceQuizContent() {
 
   return (
     <div className="min-h-screen bg-background">
+      <PrefetchImages
+        imageUrls={sessionWords
+          .map((w) => w.image_url)
+          .filter((url): url is string => !!url)}
+        currentIndex={-1}
+        count={sessionWords.length}
+      />
       <QuizNavigation
         view="quiz-image-choice"
         onBack={() => setView("quiz-menu")}
