@@ -31,7 +31,7 @@ export const WordCard: React.FC<WordCardProps> = ({
     if (word.audio_url) {
       const audio = new Audio(word.audio_url);
       setIsPlaying(true);
-      audio.onend = () => setIsPlaying(false);
+      audio.onended = () => setIsPlaying(false);
       audio.play();
     } else {
       // Fallback to Web Speech API
