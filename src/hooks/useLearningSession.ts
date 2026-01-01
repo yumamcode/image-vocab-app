@@ -3,9 +3,8 @@
 import { useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase-browser";
 import { calculateNextReview, performanceToQuality } from "@/lib/spaced-repetition";
-import { User } from "@supabase/supabase-js";
 
-export function useLearningSession(words: any[], user: User | null) {
+export function useLearningSession(words: any[]) {
   const [sessionWords, setSessionWords] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
@@ -32,39 +31,7 @@ export function useLearningSession(words: any[], user: User | null) {
   const handleAnswer = useCallback(async (isCorrect: boolean) => {
     const quality = performanceToQuality(isCorrect);
 
-    if (user && currentWord) {
-      const { data: progress } = await supabase
-        .from("user_word_progress")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("word_id", currentWord.id)
-        .maybeSingle();
-
-      const result = calculateNextReview(
-        quality,
-        progress?.correct_count || 0,
-        progress?.ease_factor || 2.5,
-        progress?.interval || 0
-      );
-
-      const { error } = await supabase.from("user_word_progress").upsert({
-        user_id: user.id,
-        word_id: currentWord.id,
-        status: result.status,
-        correct_count: isCorrect
-          ? (progress?.correct_count || 0) + 1
-          : progress?.correct_count || 0,
-        incorrect_count: !isCorrect
-          ? (progress?.incorrect_count || 0) + 1
-          : progress?.incorrect_count || 0,
-        ease_factor: result.ease_factor,
-        interval: result.interval,
-        next_review_date: result.next_review_date.toISOString(),
-        last_reviewed_at: new Date().toISOString(),
-      });
-
-      if (error) console.error("Error saving progress:", error);
-    } else if (currentWord) {
+    if (currentWord) {
       const result = calculateNextReview(quality, 0);
       console.log(`Word: ${currentWord.word}, Result:`, result);
     }
@@ -74,7 +41,7 @@ export function useLearningSession(words: any[], user: User | null) {
     } else {
       setIsFinished(true);
     }
-  }, [user, currentWord, currentIndex, sessionWords.length, supabase]);
+  }, [currentWord, currentIndex, sessionWords.length]);
 
   const toggleFavorite = useCallback((id: number) => {
     setFavorites((prev) => {

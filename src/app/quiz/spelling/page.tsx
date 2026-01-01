@@ -6,7 +6,6 @@ import { SpellingQuiz } from "@/components/SpellingQuiz";
 import { Navigation } from "@/components/home/Navigation";
 import { SessionHeader } from "@/components/home/SessionHeader";
 import { SessionFinishedView } from "@/components/home/SessionFinishedView";
-import { useUser } from "@/hooks/useUser";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";
 import { Loader2 } from "lucide-react";
@@ -17,7 +16,6 @@ function SpellingQuizContent() {
   const countParam = searchParams.get("count");
   const count = countParam ? parseInt(countParam) : 10;
 
-  const { user } = useUser();
   const { words, loading } = useWords();
   const {
     sessionWords,
@@ -27,7 +25,7 @@ function SpellingQuizContent() {
     progressPercent,
     startSession,
     handleAnswer,
-  } = useLearningSession(words, user);
+  } = useLearningSession(words);
 
   useEffect(() => {
     if (words.length > 0 && sessionWords.length === 0 && !isFinished) {
@@ -91,13 +89,14 @@ function SpellingQuizContent() {
 
 export default function SpellingQuizPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-blue-500" size={48} />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="animate-spin text-blue-500" size={48} />
+        </div>
+      }
+    >
       <SpellingQuizContent />
     </Suspense>
   );
 }
-

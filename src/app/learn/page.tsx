@@ -6,7 +6,6 @@ import { WordCard } from "@/components/WordCard";
 import { Navigation } from "@/components/home/Navigation";
 import { SessionHeader } from "@/components/home/SessionHeader";
 import { SessionFinishedView } from "@/components/home/SessionFinishedView";
-import { useUser } from "@/hooks/useUser";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";
 import { Loader2 } from "lucide-react";
@@ -18,7 +17,6 @@ function LearnContent() {
   const countParam = searchParams.get("count");
   const count = countParam ? parseInt(countParam) : 10;
 
-  const { user } = useUser();
   const { words, loading } = useWords();
   const {
     sessionWords,
@@ -30,7 +28,7 @@ function LearnContent() {
     startSession,
     handleAnswer,
     toggleFavorite,
-  } = useLearningSession(words, user);
+  } = useLearningSession(words);
 
   useEffect(() => {
     if (words.length > 0 && sessionWords.length === 0 && !isFinished) {
@@ -113,13 +111,14 @@ function LearnContent() {
 
 export default function LearnPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-primary" size={48} />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="animate-spin text-primary" size={48} />
+        </div>
+      }
+    >
       <LearnContent />
     </Suspense>
   );
 }
-

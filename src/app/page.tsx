@@ -1,18 +1,12 @@
 "use client";
 // アプリケーションのトップページコンポーネント
 import { useRouter } from "next/navigation";
-import { useUser } from "@/hooks/useUser";
-import { useWords } from "@/hooks/useWords";
-import { useLearningSession } from "@/hooks/useLearningSession";
 import { Navigation } from "@/components/home/Navigation";
 import { HeroSection, FeaturesSection } from "@/components/home/HomeView";
 import { FEATURES } from "@/constants/navigation";
 
 export default function Home() {
   const router = useRouter();
-  const { user } = useUser();
-  const { words } = useWords();
-  const { sessionWords, currentIndex } = useLearningSession(words, user);
 
   const startLearning = () => {
     router.push("/learn/settings");
@@ -20,12 +14,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation
-        view="home"
-        startLearning={startLearning}
-        currentIndex={currentIndex}
-        totalWords={sessionWords.length}
-      />
+      <Navigation view="home" startLearning={startLearning} />
 
       <div className="animate-fade-in">
         <HeroSection startLearning={startLearning} />

@@ -4,15 +4,13 @@ import { useRouter } from "next/navigation";
 import { QuizMenuView } from "@/components/home/QuizMenuView";
 import { Navigation } from "@/components/home/Navigation";
 import { QUIZ_MODES } from "@/constants/navigation";
-import { useUser } from "@/hooks/useUser";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";
 
 export default function QuizMenuPage() {
   const router = useRouter();
-  const { user } = useUser();
   const { words } = useWords();
-  const { sessionWords, currentIndex } = useLearningSession(words, user);
+  const { sessionWords, currentIndex } = useLearningSession(words);
 
   return (
     <div className="min-h-screen bg-background">

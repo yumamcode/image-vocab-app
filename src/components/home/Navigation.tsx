@@ -16,8 +16,8 @@ interface NavigationProps {
   view: AppView;
   setView?: (view: AppView) => void;
   startLearning: () => void;
-  currentIndex: number;
-  totalWords: number;
+  currentIndex?: number;
+  totalWords?: number;
 }
 
 export function Navigation({

@@ -5,15 +5,13 @@ import { useRouter } from "next/navigation";
 import { LearnSettingsView } from "@/components/home/LearnSettingsView";
 import { Navigation } from "@/components/home/Navigation";
 import { useWords } from "@/hooks/useWords";
-import { useUser } from "@/hooks/useUser";
 import { useLearningSession } from "@/hooks/useLearningSession";
 
 export default function LearnSettingsPage() {
   const router = useRouter();
   const [questionCount, setQuestionCount] = useState(10);
-  const { user } = useUser();
   const { words } = useWords();
-  const { sessionWords, currentIndex } = useLearningSession(words, user);
+  const { sessionWords, currentIndex } = useLearningSession(words);
 
   const beginLearning = (count: number) => {
     router.push(`/learn?count=${count}`);
