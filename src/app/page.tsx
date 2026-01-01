@@ -1,6 +1,6 @@
 "use client";
 // アプリケーションのトップページコンポーネント
-import { HomeNavigation } from "@/components/home/navigation/HomeNavigation";
+import { HomeNavigation } from "@/components/navigation/HomeNavigation";
 import { HeroSection } from "@/components/home/HeroSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { FEATURES } from "@/constants/navigation";

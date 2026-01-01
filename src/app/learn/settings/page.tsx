@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { LearnSettingsView } from "@/components/home/LearnSettingsView";
-import { LearnNavigation } from "@/components/home/navigation/LearnNavigation";
+import { LearnSettingsView } from "@/components/learn/LearnSettingsView";
+import { LearnNavigation } from "@/components/navigation/LearnNavigation";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";
 import { useAppNavigation } from "@/hooks/useAppNavigation";

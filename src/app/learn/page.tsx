@@ -2,10 +2,10 @@
 
 import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { WordCard } from "@/components/WordCard";
-import { LearnNavigation } from "@/components/home/navigation/LearnNavigation";
-import { SessionHeader } from "@/components/home/SessionHeader";
-import { SessionFinishedView } from "@/components/home/SessionFinishedView";
+import { WordCard } from "@/components/learn/WordCard";
+import { LearnNavigation } from "@/components/navigation/LearnNavigation";
+import { SessionHeader } from "@/components/session/SessionHeader";
+import { SessionFinishedView } from "@/components/session/SessionFinishedView";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";
 import { useAppNavigation } from "@/hooks/useAppNavigation";

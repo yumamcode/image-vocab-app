@@ -1,7 +1,7 @@
 "use client";
 
-import { QuizMenuView } from "@/components/home/QuizMenuView";
-import { QuizNavigation } from "@/components/home/navigation/QuizNavigation";
+import { QuizMenuView } from "@/components/quiz/QuizMenuView";
+import { QuizNavigation } from "@/components/navigation/QuizNavigation";
 import { QUIZ_MODES } from "@/constants/navigation";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";

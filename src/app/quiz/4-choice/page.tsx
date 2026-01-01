@@ -2,10 +2,10 @@
 
 import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { MultipleChoiceQuiz } from "@/components/MultipleChoiceQuiz";
-import { QuizNavigation } from "@/components/home/navigation/QuizNavigation";
-import { SessionHeader } from "@/components/home/SessionHeader";
-import { SessionFinishedView } from "@/components/home/SessionFinishedView";
+import { MultipleChoiceQuiz } from "@/components/quiz/MultipleChoiceQuiz";
+import { QuizNavigation } from "@/components/navigation/QuizNavigation";
+import { SessionHeader } from "@/components/session/SessionHeader";
+import { SessionFinishedView } from "@/components/session/SessionFinishedView";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
