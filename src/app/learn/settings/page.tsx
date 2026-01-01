@@ -2,16 +2,12 @@
 
 import { useState } from "react";
 import { LearnSettingsView } from "@/components/learn/LearnSettingsView";
-import { LearnNavigation } from "@/components/navigation/LearnNavigation";
-import { useWords } from "@/hooks/useWords";
-import { useLearningSession } from "@/hooks/useLearningSession";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { LearnSettingsNavigation } from "@/components/navigation/LearnSettingsNavigation";
 
 export default function LearnSettingsPage() {
   const { setView } = useAppNavigation();
   const [questionCount, setQuestionCount] = useState(10);
-  const { words } = useWords();
-  const { sessionWords, currentIndex } = useLearningSession(words);
 
   const beginLearning = (count: number) => {
     setView("learn", { count });
@@ -19,11 +15,9 @@ export default function LearnSettingsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <LearnNavigation
+      <LearnSettingsNavigation
         view="learn-settings"
         onBack={() => setView("home")}
-        currentIndex={currentIndex}
-        totalWords={sessionWords.length}
       />
       <LearnSettingsView
         questionCount={questionCount}
