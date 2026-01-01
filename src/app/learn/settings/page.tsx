@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { LearnSettingsView } from "@/components/home/LearnSettingsView";
-import { Navigation } from "@/components/home/Navigation";
+import { LearnNavigation } from "@/components/home/navigation/LearnNavigation";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
@@ -19,9 +19,9 @@ export default function LearnSettingsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation
+      <LearnNavigation
         view="learn-settings"
-        startLearning={() => setView("learn-settings")}
+        onBack={() => setView("home")}
         currentIndex={currentIndex}
         totalWords={sessionWords.length}
       />
@@ -34,4 +34,3 @@ export default function LearnSettingsPage() {
     </div>
   );
 }
-

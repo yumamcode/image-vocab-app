@@ -3,7 +3,7 @@
 import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { MultipleChoiceQuiz } from "@/components/MultipleChoiceQuiz";
-import { Navigation } from "@/components/home/Navigation";
+import { QuizNavigation } from "@/components/home/navigation/QuizNavigation";
 import { SessionHeader } from "@/components/home/SessionHeader";
 import { SessionFinishedView } from "@/components/home/SessionFinishedView";
 import { useWords } from "@/hooks/useWords";
@@ -36,9 +36,9 @@ function MultipleChoiceQuizContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation
+      <QuizNavigation
         view="quiz-4-choice"
-        startLearning={() => setView("learn-settings")}
+        onBack={() => setView("quiz-menu")}
         currentIndex={currentIndex}
         totalWords={sessionWords.length}
       />

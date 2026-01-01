@@ -1,7 +1,7 @@
 "use client";
 
 import { QuizMenuView } from "@/components/home/QuizMenuView";
-import { Navigation } from "@/components/home/Navigation";
+import { QuizNavigation } from "@/components/home/navigation/QuizNavigation";
 import { QUIZ_MODES } from "@/constants/navigation";
 import { useWords } from "@/hooks/useWords";
 import { useLearningSession } from "@/hooks/useLearningSession";
@@ -14,9 +14,9 @@ export default function QuizMenuPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation
+      <QuizNavigation
         view="quiz-menu"
-        startLearning={() => setView("learn-settings")}
+        onBack={() => setView("home")}
         currentIndex={currentIndex}
         totalWords={sessionWords.length}
       />

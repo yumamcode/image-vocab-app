@@ -3,7 +3,7 @@
 import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { WordCard } from "@/components/WordCard";
-import { Navigation } from "@/components/home/Navigation";
+import { LearnNavigation } from "@/components/home/navigation/LearnNavigation";
 import { SessionHeader } from "@/components/home/SessionHeader";
 import { SessionFinishedView } from "@/components/home/SessionFinishedView";
 import { useWords } from "@/hooks/useWords";
@@ -39,9 +39,9 @@ function LearnContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation
+      <LearnNavigation
         view="learn"
-        startLearning={() => setView("learn-settings")}
+        onBack={() => setView("home")}
         currentIndex={currentIndex}
         totalWords={sessionWords.length}
       />

@@ -1,6 +1,6 @@
 "use client";
 // アプリケーションのトップページコンポーネント
-import { Navigation } from "@/components/home/Navigation";
+import { HomeNavigation } from "@/components/home/navigation/HomeNavigation";
 import { HeroSection } from "@/components/home/HeroSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { FEATURES } from "@/constants/navigation";
@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation view="home" startLearning={startLearning} />
+      <HomeNavigation startLearning={startLearning} />
 
       <div className="animate-fade-in">
         <HeroSection startLearning={startLearning} />
