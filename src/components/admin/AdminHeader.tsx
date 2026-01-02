@@ -1,6 +1,7 @@
 import React from "react";
 import { Upload, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { UserButton } from "@clerk/nextjs";
 
 interface AdminHeaderProps {
   isAdding: boolean;
@@ -23,7 +24,7 @@ export function AdminHeader({
         </h1>
         <p className="text-gray-500">単語データ管理と画像登録</p>
       </div>
-      <div className="flex gap-4">
+      <div className="flex items-center gap-4">
         <button
           onClick={() => setIsAdding(!isAdding)}
           className="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700 transition-all flex items-center gap-2"
@@ -48,8 +49,8 @@ export function AdminHeader({
         >
           ホームへ
         </Link>
+        <UserButton afterSignOutUrl="/" />
       </div>
     </header>
   );
 }
-
