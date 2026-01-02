@@ -1,6 +1,7 @@
 import React from "react";
 import { X, Loader2 } from "lucide-react";
 import { Word } from "@/types/word";
+import { WORD_CATEGORIES } from "@/constants/word";
 
 interface EditWordModalProps {
   word: Word;
@@ -99,7 +100,7 @@ export function EditWordModal({
                 onChange={(e) =>
                   setWord({
                     ...word,
-                    difficulty: e.target.value as any,
+                    difficulty: e.target.value as Word["difficulty"],
                   })
                 }
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all"
@@ -113,12 +114,17 @@ export function EditWordModal({
               <label className="block text-sm font-bold text-gray-700 mb-2">
                 カテゴリー
               </label>
-              <input
-                type="text"
-                value={word.category || ""}
+              <select
+                value={word.category || "general"}
                 onChange={(e) => setWord({ ...word, category: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all"
-              />
+              >
+                {WORD_CATEGORIES.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -147,4 +153,3 @@ export function EditWordModal({
     </div>
   );
 }
-

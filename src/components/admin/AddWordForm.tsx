@@ -2,6 +2,7 @@ import React from "react";
 import { Loader2 } from "lucide-react";
 import { NewWord } from "@/types/word";
 import { AdminFormField, adminInputClass } from "./AdminFormField";
+import { WORD_CATEGORIES } from "@/constants/word";
 
 interface AddWordFormProps {
   newWord: NewWord;
@@ -85,13 +86,17 @@ export function AddWordForm({
         </AdminFormField>
 
         <AdminFormField label="カテゴリー">
-          <input
-            type="text"
-            value={newWord.category || ""}
+          <select
+            value={newWord.category || "general"}
             className={adminInputClass}
-            placeholder="fruit"
             onChange={(e) => updateField("category", e.target.value)}
-          />
+          >
+            {WORD_CATEGORIES.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
         </AdminFormField>
 
         <div className="md:col-span-3">

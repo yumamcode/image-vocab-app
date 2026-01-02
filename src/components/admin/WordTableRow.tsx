@@ -1,6 +1,7 @@
 import React from "react";
 import { Check, Loader2, Upload } from "lucide-react";
 import { Word } from "@/types/word";
+import { WORD_CATEGORIES } from "@/constants/word";
 
 interface WordTableRowProps {
   word: Word;
@@ -50,7 +51,8 @@ export function WordTableRow({
       <td className="px-6 py-4 text-gray-600">{word.meaning}</td>
       <td className="px-6 py-4">
         <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs font-bold uppercase">
-          {word.category}
+          {WORD_CATEGORIES.find((c) => c.value === word.category)?.label ||
+            word.category}
         </span>
       </td>
       <td className="px-6 py-4">
