@@ -33,14 +33,19 @@ export function useLearningSession(words: any[]) {
 
   const handleAnswer = useCallback(
     async (_isCorrect: boolean) => {
-      if (currentIndex < sessionWords.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        setIsFinished(true);
-      }
+      // 回答を記録するロジック（将来的に拡張可能）
+      console.log(`Answered: ${_isCorrect}`);
     },
-    [currentIndex, sessionWords.length]
+    []
   );
+
+  const goToNextWord = useCallback(() => {
+    if (currentIndex < sessionWords.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      setIsFinished(true);
+    }
+  }, [currentIndex, sessionWords.length]);
 
   const toggleFavorite = useCallback((id: number) => {
     setFavorites((prev) => {
@@ -63,6 +68,7 @@ export function useLearningSession(words: any[]) {
     progressPercent,
     startSession,
     handleAnswer,
+    goToNextWord,
     toggleFavorite,
     setSessionWords,
     setCurrentIndex,

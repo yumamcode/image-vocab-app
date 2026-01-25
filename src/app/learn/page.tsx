@@ -29,6 +29,7 @@ function LearnContent() {
     progressPercent,
     startSession,
     handleAnswer,
+    goToNextWord,
     toggleFavorite,
   } = useLearningSession(words);
 
@@ -80,10 +81,12 @@ function LearnContent() {
                 </div>
               ) : sessionWords.length > 0 ? (
                 <WordCard
+                  key={currentWord?.id || currentIndex}
                   word={currentWord}
                   isFavorite={favorites.has(currentWord?.id)}
                   onToggleFavorite={() => toggleFavorite(currentWord.id)}
                   onAnswer={handleAnswer}
+                  onNext={goToNextWord}
                 />
               ) : (
                 <div className="py-20 text-center">

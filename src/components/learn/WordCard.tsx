@@ -1,6 +1,7 @@
 "use client";
 // 単語の詳細を表示するカードコンポーネント
 import React from "react";
+import { ArrowRight } from "lucide-react";
 import { WordIllustration } from "./WordIllustration";
 import { WordHeader } from "./WordHeader";
 import { WordMeaning } from "./WordMeaning";
@@ -19,6 +20,7 @@ interface WordCardProps {
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
   onAnswer?: (isCorrect: boolean) => void;
+  onNext?: () => void;
 }
 
 /**
@@ -30,6 +32,7 @@ export const WordCard: React.FC<WordCardProps> = ({
   isFavorite = false,
   onToggleFavorite,
   onAnswer,
+  onNext,
 }) => {
   const { isPlaying, playAudio } = useAudioPlayer();
 
@@ -53,6 +56,17 @@ export const WordCard: React.FC<WordCardProps> = ({
           exampleSentence={word.example_sentence}
           onAnswer={onAnswer}
         />
+
+        {onNext && (
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={onNext}
+              className="w-full py-4 px-6 bg-primary text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all hover:bg-primary/90"
+            >
+              次へ進む <ArrowRight size={20} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
