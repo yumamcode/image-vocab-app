@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactNode } from "react";
-import { UserButton } from "@clerk/nextjs";
 
 interface BaseSubNavigationProps {
   backButtonText: string;
@@ -40,15 +39,12 @@ export function BaseSubNavigation({
             </span>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="text-foreground font-bold text-lg hidden sm:block">
-              {showProgress && currentIndex !== undefined && totalWords !== undefined && (
-                <>
-                  {currentIndex + 1} / {totalWords}
-                </>
-              )}
-            </div>
-            <UserButton afterSignOutUrl="/" />
+          <div className="text-foreground font-bold text-lg">
+            {showProgress && currentIndex !== undefined && totalWords !== undefined && (
+              <>
+                {currentIndex + 1} / {totalWords}
+              </>
+            )}
           </div>
         </div>
       </div>
