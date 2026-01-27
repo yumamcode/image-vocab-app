@@ -11,12 +11,16 @@ interface AddWordFormProps {
   loading: boolean;
 }
 
+/**
+ * 新しい単語を追加するための入力フォームを表示する部品です。
+ */
 export function AddWordForm({
   newWord,
   setNewWord,
   onSubmit,
   loading,
 }: AddWordFormProps) {
+  // 入力された内容を一時的に保存する関数
   const updateField = (field: keyof NewWord, value: string) => {
     setNewWord({ ...newWord, [field]: value });
   };
@@ -28,6 +32,7 @@ export function AddWordForm({
         onSubmit={onSubmit}
         className="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
+        {/* 英単語を入力する場所 */}
         <AdminFormField label="英単語" required>
           <input
             type="text"
@@ -39,6 +44,7 @@ export function AddWordForm({
           />
         </AdminFormField>
 
+        {/* 日本語の意味を入力する場所 */}
         <AdminFormField label="意味" required>
           <input
             type="text"
@@ -50,6 +56,7 @@ export function AddWordForm({
           />
         </AdminFormField>
 
+        {/* 発音記号を入力する場所 */}
         <AdminFormField label="発音記号">
           <input
             type="text"
@@ -60,6 +67,7 @@ export function AddWordForm({
           />
         </AdminFormField>
 
+        {/* 名詞や動詞などの種類を選ぶ場所 */}
         <AdminFormField label="品詞">
           <select
             value={newWord.part_of_speech || "noun"}
@@ -73,6 +81,7 @@ export function AddWordForm({
           </select>
         </AdminFormField>
 
+        {/* 難易度（初級・中級・上級）を選ぶ場所 */}
         <AdminFormField label="難易度">
           <select
             value={newWord.difficulty}
@@ -85,6 +94,7 @@ export function AddWordForm({
           </select>
         </AdminFormField>
 
+        {/* カテゴリー（日常会話など）を選ぶ場所 */}
         <AdminFormField label="カテゴリー">
           <select
             value={newWord.category || "general"}
@@ -99,6 +109,7 @@ export function AddWordForm({
           </select>
         </AdminFormField>
 
+        {/* 登録ボタンを表示する場所 */}
         <div className="md:col-span-3">
           <button
             type="submit"
@@ -106,6 +117,7 @@ export function AddWordForm({
             className="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 transition-all disabled:opacity-50"
           >
             {loading ? (
+              // 登録中のぐるぐるマーク
               <Loader2 className="animate-spin mx-auto" />
             ) : (
               "単語を登録する"
