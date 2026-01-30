@@ -3,6 +3,10 @@
 import { useCallback } from "react";
 import { Word } from "@/types/word";
 
+/**
+ * 学習セッションの「動き（ロジック）」を担当する道具です。
+ * セッションを始めたり、次の単語に進んだりします。
+ */
 export function useSessionLogic(words: Word[], state: any) {
   const startSession = useCallback(
     (count: number = 10) => {
@@ -25,8 +29,9 @@ export function useSessionLogic(words: Word[], state: any) {
   }, [state]);
 
   const handleAnswer = useCallback(async (_isCorrect: boolean) => {
-    console.log(`Answered: ${_isCorrect}`);
+    console.log(`答えました: ${_isCorrect ? "正解！" : "残念！"}`);
   }, []);
 
   return { startSession, goToNextWord, handleAnswer };
 }
+
