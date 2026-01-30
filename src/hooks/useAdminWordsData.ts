@@ -56,6 +56,7 @@ export function useAdminWordsData() {
         part_of_speech: editingWord.part_of_speech,
         difficulty: editingWord.difficulty,
         category: editingWord.category,
+        example_sentence: editingWord.example_sentence,
       })
       .eq("id", editingWord.id);
 

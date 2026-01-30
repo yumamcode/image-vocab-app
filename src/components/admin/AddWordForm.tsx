@@ -109,6 +109,18 @@ export function AddWordForm({
           </select>
         </AdminFormField>
 
+        {/* 例文を入力する場所 */}
+        <div className="md:col-span-3">
+          <AdminFormField label="例文">
+            <textarea
+              value={newWord.example_sentence || ""}
+              className={`${adminInputClass} min-h-[100px]`}
+              placeholder="I have a dentist appointment at 3 PM."
+              onChange={(e) => updateField("example_sentence", e.target.value)}
+            />
+          </AdminFormField>
+        </div>
+
         {/* 登録ボタンを表示する場所 */}
         <div className="md:col-span-3">
           <button

@@ -8,6 +8,7 @@ export interface Word {
   difficulty: "beginner" | "intermediate" | "advanced";
   image_url: string | null;
   audio_url: string | null;
+  example_sentence: string | null;
   created_at: string;
 }
 

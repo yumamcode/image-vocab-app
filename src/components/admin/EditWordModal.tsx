@@ -128,6 +128,19 @@ export function EditWordModal({
             </div>
           </div>
 
+          <div className="mb-8">
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              例文
+            </label>
+            <textarea
+              value={word.example_sentence || ""}
+              onChange={(e) =>
+                setWord({ ...word, example_sentence: e.target.value })
+              }
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all min-h-[100px]"
+            />
+          </div>
+
           <div className="flex gap-4">
             <button
               type="button"
