@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
-import { Upload, Loader2 } from "lucide-react";
+import { Upload, Loader2, LogOut } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
 interface AdminHeaderProps {
   isAdding: boolean;
@@ -15,13 +18,18 @@ export function AdminHeader({
   uploadingBulk,
   onBulkUpload,
 }: AdminHeaderProps) {
+  const { user, signOut } = useAuth();
+
   return (
     <header className="flex justify-between items-center mb-8">
       <div>
         <h1 className="text-3xl font-bold font-serif text-gray-900">
           管理者ダッシュボード
         </h1>
-        <p className="text-gray-500">単語データ管理と画像登録</p>
+        <p className="text-gray-500">
+          単語データ管理と画像登録
+          {user && <span className="ml-2 text-primary">({user.email})</span>}
+        </p>
       </div>
       <div className="flex gap-4">
         <button
@@ -48,6 +56,13 @@ export function AdminHeader({
         >
           ホームへ
         </Link>
+        <button
+          onClick={signOut}
+          className="bg-red-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700 transition-all flex items-center gap-2"
+        >
+          <LogOut size={20} />
+          ログアウト
+        </button>
       </div>
     </header>
   );

@@ -2,6 +2,7 @@
 
 import { BookOpen, Brain, Trophy } from "lucide-react";
 import Link from "next/link";
+import { UserMenu } from "@/components/auth/UserMenu";
 
 interface HomeNavigationProps {
   startLearning: () => void;
@@ -22,19 +23,22 @@ export function HomeNavigation({ startLearning }: HomeNavigationProps) {
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={startLearning}
-              className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
-            >
-              <Brain size={20} /> イラスト学習
-            </button>
-            <Link
-              href="/quiz"
-              className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
-            >
-              <Trophy size={20} /> 多様なクイズ形式
-            </Link>
+          <div className="flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-8">
+              <button
+                onClick={startLearning}
+                className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
+              >
+                <Brain size={20} /> イラスト学習
+              </button>
+              <Link
+                href="/quiz"
+                className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors font-medium"
+              >
+                <Trophy size={20} /> 多様なクイズ形式
+              </Link>
+            </div>
+            <UserMenu />
           </div>
         </div>
       </div>
