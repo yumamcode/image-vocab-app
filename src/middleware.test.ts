@@ -40,23 +40,18 @@ describe('Middleware', () => {
     return new NextRequest(new URL(pathname, baseUrl))
   }
 
-  it('未認証ユーザーが保護されたページ (/learn) にアクセスした場合、ログインページにリダイレクトされること', async () => {
+  it('未認証ユーザーが /learn にアクセスした場合、アクセスが許可されること（現在は公開ページ）', async () => {
+    const mockResponse = { status: 200 } as any
     vi.mocked(updateSession).mockResolvedValue({
-      supabaseResponse: {} as any,
+      supabaseResponse: mockResponse,
       user: null,
     })
 
     const req = createRequest('/learn')
     const res = await middleware(req)
 
-    expect(NextResponse.redirect).toHaveBeenCalledWith(
-      expect.objectContaining({
-        pathname: '/login',
-        searchParams: expect.any(URLSearchParams),
-      })
-    )
-    const redirectUrl = vi.mocked(NextResponse.redirect).mock.calls[0][0] as URL
-    expect(redirectUrl.searchParams.get('redirectTo')).toBe('/learn')
+    expect(res).toBe(mockResponse)
+    expect(NextResponse.redirect).not.toHaveBeenCalled()
   })
 
   it('未認証ユーザーが管理者ページ (/admin) にアクセスした場合、ログインページにリダイレクトされること', async () => {

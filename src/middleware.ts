@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase-middleware";
 
 // 認証が必要なパス
-const protectedPaths = ["/learn"];
+const protectedPaths: string[] = [];
 
 // 管理者のみアクセス可能なパス
 const adminPaths = ["/admin"];
