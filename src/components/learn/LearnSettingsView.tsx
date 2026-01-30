@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Brain, Sparkles } from "lucide-react";
-import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export function LearnSettingsView() {
   const { setView } = useAppNavigation();

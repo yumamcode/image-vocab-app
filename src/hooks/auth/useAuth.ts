@@ -1,6 +1,6 @@
 "use client";
 import { useAuthState } from "./useAuthState";
-import { useAdminCheck } from "./useAdminCheck";
+import { useAdminCheck } from "../admin/useAdminCheck";
 import { useSignOut } from "./useSignOut";
 
 /**

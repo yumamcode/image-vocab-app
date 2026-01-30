@@ -2,7 +2,7 @@
 // ユーザーメニューコンポーネント（ログイン/ログアウトボタン）
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { User, LogOut, Settings, ChevronDown, LogIn } from "lucide-react";
 
 export function UserMenu() {

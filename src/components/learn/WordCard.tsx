@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { WordIllustration } from "./WordIllustration";
 import { WordHeader } from "./WordHeader";
 import { WordMeaning } from "./WordMeaning";
-import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import { useAudioPlayer } from "@/hooks/ui/useAudioPlayer";
 
 interface WordCardProps {
   word: {

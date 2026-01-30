@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { useAdminWords } from "@/hooks/useAdminWords";
-import { useImageUpload } from "@/hooks/useImageUpload";
+import { useAdminWords } from "@/hooks/admin/useAdminWords";
+import { useImageUpload } from "@/hooks/admin/useImageUpload";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AddWordForm } from "@/components/admin/AddWordForm";
 import { BulkUploadZone } from "@/components/admin/BulkUploadZone";

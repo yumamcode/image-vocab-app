@@ -2,9 +2,9 @@
 
 import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useWords } from "@/hooks/useWords";
-import { useLearningSession } from "@/hooks/useLearningSession";
-import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { useWords } from "@/hooks/word/useWords";
+import { useLearningSession } from "@/hooks/session/useLearningSession";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { Loader2 } from "lucide-react";
 import { LearnView } from "@/components/learn/LearnView";
 

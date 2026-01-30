@@ -4,7 +4,7 @@ import { HomeNavigation } from "@/components/navigation/HomeNavigation";
 import { HeroSection } from "@/components/home/HeroSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { FEATURES } from "@/constants/navigation";
-import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export default function Home() {
   const { setView } = useAppNavigation();

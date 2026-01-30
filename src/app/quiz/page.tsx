@@ -3,9 +3,9 @@
 import { QuizMenuView } from "@/components/quiz/QuizMenuView";
 import { QuizNavigation } from "@/components/navigation/QuizNavigation";
 import { QUIZ_MODES } from "@/constants/navigation";
-import { useWords } from "@/hooks/useWords";
-import { useLearningSession } from "@/hooks/useLearningSession";
-import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { useWords } from "@/hooks/word/useWords";
+import { useLearningSession } from "@/hooks/session/useLearningSession";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export default function QuizMenuPage() {
   const { setView } = useAppNavigation();

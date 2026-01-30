@@ -3,7 +3,7 @@
 import { Word } from "@/types/word";
 import { useSessionState } from "./useSessionState";
 import { useSessionProgress } from "./useSessionProgress";
-import { useFavorites } from "./useFavorites";
+import { useFavorites } from "../word/useFavorites";
 import { useSessionLogic } from "./useSessionLogic";
 
 export function useLearningSession(words: Word[]) {

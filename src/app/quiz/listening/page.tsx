@@ -6,9 +6,9 @@ import { ListeningQuiz } from "@/components/quiz/ListeningQuiz";
 import { QuizNavigation } from "@/components/navigation/QuizNavigation";
 import { SessionHeader } from "@/components/session/SessionHeader";
 import { SessionFinishedView } from "@/components/session/SessionFinishedView";
-import { useWords } from "@/hooks/useWords";
-import { useLearningSession } from "@/hooks/useLearningSession";
-import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { useWords } from "@/hooks/word/useWords";
+import { useLearningSession } from "@/hooks/session/useLearningSession";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { Loader2 } from "lucide-react";
 
 function ListeningQuizContent() {

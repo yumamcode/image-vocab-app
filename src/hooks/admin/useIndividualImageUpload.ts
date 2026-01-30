@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase-browser";
 import { Word } from "@/types/word";
 import { uploadWordImage } from "./useUploadWordImage";
-import { useWordListUpdater } from "./useWordListUpdater";
+import { useWordListUpdater } from "../word/useWordListUpdater";
 
 /**
  * 選んだ1つの単語に対して、画像を1枚だけアップロードする機能をまとめました。

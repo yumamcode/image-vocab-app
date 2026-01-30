@@ -1,7 +1,7 @@
 "use client";
 
 import { LearnSettingsView } from "@/components/learn/LearnSettingsView";
-import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { LearnSettingsNavigation } from "@/components/navigation/LearnSettingsNavigation";
 
 export default function LearnSettingsPage() {

@@ -3,7 +3,7 @@
 import React from "react";
 import { Upload, Loader2, LogOut } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 interface AdminHeaderProps {
   isAdding: boolean;
